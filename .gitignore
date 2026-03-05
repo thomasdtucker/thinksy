@@ -28,3 +28,7 @@ web/out/
 # OS
 .DS_Store
 Thumbs.db
+
+# Context sync
+context/.sync.lock
+context/.sync.log
