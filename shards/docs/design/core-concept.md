@@ -1,205 +1,81 @@
-# Shards of the Nexus — Core Concept
+# Shards of the Nexus - Core Concept (v2)
 
-## Tagline
+**Tagline:** Every world broke. You collect the pieces.
 
-> **Every world broke. You collect the pieces.**
+## Overview
 
----
+Shards of the Nexus is a collectible sci-fi strategy card game where players command scavenger ships exploring a fractured universe known as **The Rift**. Players build decks of units, ship upgrades, and reality-warping **Fracture events** to defeat opponents or AI bosses while collecting new cards discovered during expeditions.
 
-## Theme and Lore
+## Setting: The Rift
 
-The multiverse shattered.
+The universe fractured. Fragments of destroyed worlds drift through an unstable region called The Rift. Players are ship captains — scavengers, explorers, and warriors — who navigate The Rift to collect powerful Shards and battle rival crews.
 
-Fragments of destroyed worlds — called **Shards** — now orbit a massive cosmic anomaly called **The Nexus**. Each Shard contains:
+## Design Pillars
 
-- Lost civilizations
-- Elemental forces
-- Corrupted creatures
-- Ancient tech
-- Godlike Avatars
+### 1. Discoverability
+Players constantly discover new cards through Rift exploration. The Rift provides a narrative reason for constant card discovery, ensuring long-term replayability.
 
-Players are called **Binders** — beings who collect, control, and fuse Shards to build evolving combat teams.
+### 2. Modular Progression
+Ships and parts allow players to experiment with builds. Ship identity defines playstyle.
 
-In the lore, the Nexus is unstable. Binders must wear adaptive armor (Nexus Harnesses) to survive its distortions. They command ancient interdimensional ships called **Nexus Vessels** to navigate the shattered multiverse.
-
----
-
-## What Players Are: Binders
-
-Binders are the player identity in the game. Each Binder:
-
-- Builds a 30-card deck
-- Chooses 1 Avatar (their main champion)
-- Chooses 3 Shards (elemental alignment for the match)
-- Equips 1 Ship (permanent account-wide identity)
-- Equips 1 Harness (ultra-rare Avatar augmentation)
-
----
-
-## What Shards Are
-
-Shards are the elemental alignment system. Each player selects 3 Shards before a match. Shards give different Energy bonuses and define deck-building strategy:
-
-| Shard | Bonus |
-|---|---|
-| 🔥 Ember Shard | +1 damage on Fractures |
-| 🌿 Verdant Shard | Units heal each turn |
-| 🌊 Tidal Shard | Draw bonus cards |
-| 🌌 Void Shard | Corrupt enemy units |
-
-Deck-building becomes strategic around Shard selection.
-
----
-
-## The Nexus
-
-The Nexus is the central cosmic anomaly around which all Shards orbit. It is unstable — reality cracks mid-battle, fragments of other worlds collide temporarily. This instability is the in-universe explanation for **Fractures** (the card type that replaced spells).
-
-The goal of each match: reduce your opponent's **Nexus Stability from 20 to 0**.
-
----
-
-## The Three Collection Layers
-
-The game has three distinct collection systems, each with different rarity and permanence:
-
-| Layer | What It Is | Permanence | Rarity |
-|---|---|---|---|
-| **Cards** | Deck-building pieces (Units, Fractures, Relics, Fusion) | Seasonal rotation | Common to Mythic |
-| **Ships** | Nexus Vessels — global modifiers to all decks | Permanent, never rotate | Ultra Rare |
-| **Harnesses** | Nexus Harnesses — Avatar augmentation | Permanent, never rotate | Mythic Ascendant (rarest in game) |
-
----
+### 3. Seasonal Evolution
+Each season introduces new factions, new ship parts, and new Rift mechanics.
 
 ## Core Gameplay Loop
 
-1. Build a 30-card deck
-2. Choose Avatar, Shards, Ship, and Harness
-3. Gain +1 Energy per turn (max 10)
-4. Play cards using Energy — Units attack, Fractures bend reality, Relics provide passive effects
-5. Reduce opponent's Nexus Stability from 20 to 0
+1. Return to a **Rift Station**
+2. Build or modify deck
+3. Equip ship parts
+4. Choose an expedition or match
+5. Battle opponents
+6. Discover new cards in the Rift
 
----
+## Factions (5)
 
-## Launch Archetypes
+| Faction | Identity |
+|---------|----------|
+| Scrappers | Aggressive scavengers, fast damage, cheap units |
+| Void | Corruption mechanics, debuffs, chaos |
+| Nomads | Card draw, Rift rewards, exploration |
+| Sentinels | Defensive builds, high health, guard |
+| Wild | Fracture specialists, power scaling |
 
-| Archetype | Style |
-|---|---|
-| 🌿 Sustain Bloom | Healing and growth |
-| 🔥 Burn Aggro | Fast damage |
-| 🌊 Control Tides | Card draw and delay |
-| 🌌 Void Corruption | Risk/reward chaos |
-| ⚙️ Aether Tech | Construct units and combo engines |
+## Game Modes
 
----
+| Mode | Description |
+|------|-------------|
+| Duel Mode | Standard PvP match |
+| AI Skirmish | Practice vs AI decks |
+| Rift Expedition | PvE progression with card discovery |
+| Boss Hunt | Challenge rare bosses for legendary cards |
 
-## Seasonal Meta Shifts
+## Victory Conditions
 
-Each "Season of the Nexus":
+A match ends when:
+- A ship reaches 0 hull
+- A player cannot draw a card
+- A boss is defeated (PvE)
 
-- 20% of Relics rotate out
-- New Shards are introduced
-- 3 new Avatars launch
-- Fusion combos shift the power balance
-- 5–10 new Ship Parts added
-- New Harness variants introduced
+## Card Types (4 core)
 
-Ships and Harnesses **never rotate out**. Cards rotate seasonally.
+1. **Ships** — Your vessel, in play the entire game
+2. **Units** — Combat pieces, attack and defend
+3. **Ship Parts** — Modify ship abilities, extremely rare
+4. **Fractures** — Reality distortion events, instant effects
 
----
+## What Was Simplified from v1
 
-## Visual Style
+The v2 design addressed the "over-designed" critique by cutting/deferring:
 
-Hybrid aesthetic:
+| System | Status |
+|--------|--------|
+| Avatars | Cut — ships ARE the identity now |
+| Harnesses/Exo-Suits | Deferred to future expansion |
+| Fusion Cards | Deferred to future expansion |
+| Relics | Cut — ship parts cover this |
+| Elemental Shards (alignment) | Replaced by Factions |
+| 4 Fracture categories | Simplified to instant events |
+| Shard Corruption mechanic | Replaced by Void faction corruption |
+| Living/Evolving cards | Deferred |
 
-- Genshin-level character art
-- WoW armor fantasy
-- League splash-art energy
-- Minecraft "shard" geometry fragments in background
-
-Cards animate subtly in digital form.
-
----
-
-## Optional Game Modes
-
-- 1v1 Ranked
-- 2v2 Nexus Clash
-- PvE Shard Raids (4 players vs boss AI)
-- Limited Draft Mode
-- AI Campaign Story Mode
-
----
-
-## AI System
-
-Players can face:
-
-- Ranked AI
-- Custom personality AI
-- Learning AI that adapts to your deck
-
-AI difficulty tiers: Casual, Meta Master, Adaptive Strategist
-
-AI reads your deck archetype, past play patterns, and favorite Shards. AI also adapts to your Ship class (e.g., against Ember it plays more shields; against Void it reduces mutation risk plays; against Titan it focuses on AoE).
-
----
-
-## Living Cards (Digital Hook)
-
-Certain cards are "Evolving Digital Cards" that:
-
-- Gain experience when played
-- Unlock alternate art
-- Unlock upgraded abilities
-- Visually transform over time
-
----
-
-## Known Risks and Critiques
-
-### 1. Over-Designed
-
-The game currently has 7+ systems layered on top of each other: Units, Relics, Fractures, Ships, Ship Parts, Harnesses, Micro-mods, and Fusion. To a hardcore gamer this is appealing. To a new player it is overwhelming. To a product team it is a nightmare to balance.
-
-### 2. Dangerously Close to "Everything Game"
-
-It borrows from: Pokémon evolution, Magic-style combat, Hearthstone energy ramp, League mythic items, WoW gear, Gacha fragments, and Roguelike mutation. When a game tries to be everything it often becomes nothing distinct. It needs a single defining mechanic. Right now it has five.
-
-### 3. Balance Complexity Is Explosive
-
-Variables per match: 30-card deck, 1 Avatar, 1 Ship class, 8 Ship Parts, 1 Harness, 2 Micro-mods, seasonal rotation, Fracture variance. That is combinatorial chaos. Balancing this long-term requires a massive live balance team, constant patching, and data science infrastructure. Small teams drown here.
-
-### 4. Competitive Integrity Risk
-
-Ships and Harnesses being ultra-rare creates pay-to-win perception risk. Even if mathematically balanced, players feel disadvantaged without rare systems. Games die not because of math but because of perception.
-
-### 5. Onboarding Is Still Heavy
-
-A new player must learn: Energy system, Unit combat, Fractures, Relics, Avatar ultimates, Fusion, Ships, and Harnesses. That is 7 mental models. The most successful card games teach 2–3 systems max at the start.
-
-### 6. Fractures May Still Feel Like Spells
-
-Even though rebranded, Fractures are functionally still "pay energy, do effect." If they don't mechanically differ enough, players will say "Oh, these are spells." The re-theme may not create mechanical identity.
-
-### 7. Long-Term Content Burden
-
-The game commits to: seasonal meta shifts, new Ship Parts, new Harnesses, new Fractures, new Units, and rotations. This is AAA live-service scope. Most CCGs fail because the content treadmill is brutal.
-
-### 8. Identity Confusion
-
-The elevator pitch is currently too long: "It's a multiverse card game with ships and suits and fractures and evolving cards." Compare: Pokémon = collect monsters, evolve them. Magic = summon creatures and cast spells. Hearthstone = Warcraft card battles. This game needs one line.
-
-### 9. Emotional Anchor Is Weak
-
-Pokémon has cute creatures. WoW has factions. League has champions. The emotional hook here is unclear. Systems are strong. Characters are not. Players bond with characters, not mechanics.
-
-### 10. Monetization Risk
-
-Three prestige layers (Ships, Harnesses, Cards) are extremely delicate to monetize. If monetized aggressively it feels exploitative. If monetized lightly, revenue is weak.
-
-### Core Question
-
-What is the ONE thing this game does better than everyone else? Right now the answer is unclear. The Ship system is the most unique and differentiated part. The rest still orbits familiar territory.
-
-A ruthless product question: Should Ships be the core game, with cards orbiting that? Right now Ships feel more interesting than Units — and that is telling.
+**Core principle:** Ships are THE identity mechanic. Everything orbits the ship.

@@ -1,143 +1,103 @@
-# Nexus Vessels (Ship System)
+# Ships & Ship Parts (v2)
 
-Binders command ancient interdimensional ships called **Nexus Vessels**.
+## Ships
 
-## Properties
-- Extremely rare
-- Built piece-by-piece
-- Account-wide permanent
-- Meta-defining
-- Slow to assemble (months, not days)
-- Do NOT rotate out each season
-- Do NOT go into decks
-- Modify how ALL your decks play
+Ships are the core identity mechanic. Every player selects **one ship** before a match. Ships remain in play the entire game and define playstyle.
 
-## How Ships Work
+### Ship Attributes
+- **Hull (HP):** How much damage the ship can take before losing
+- **Ability:** Passive effect active the entire game
+- **Faction:** Determines card synergies
+- **Equipment Slots:** Where ship parts are installed
 
-Each player equips:
-- **1 Active Ship**
-- With **6 installed Ship Parts**
+### The 6 Ships
 
-Ships provide:
-- Global stat modifiers
-- Energy system tweaks
-- Altered card behavior
-- Meta-shifting mechanics
+| ID | Ship | Faction | Hull | Ability | Rarity |
+|----|------|---------|------|---------|--------|
+| SH01 | Rustwind Scrapper | Scrappers | 20 | Units cost 1 less energy | Starter |
+| SH02 | Void Skimmer | Void | 18 | Corrupted units gain +1 power | Starter |
+| SH03 | Drift Hauler | Nomads | 22 | Gain extra cards from rift wins | Rare |
+| SH04 | Bastion Frame | Sentinels | 24 | Units gain +1 health | Rare |
+| SH05 | Rift Prowler | Wild | 19 | First fracture each turn costs 0 | Epic |
+| SH06 | Starbreaker Hull | Void | 25 | Corrupted enemies deal -1 damage | Legendary |
 
-## The 7 Ship Classes
+### Ship Design Notes
+- Lower hull = stronger ability (risk/reward)
+- Starter ships are balanced for new players
+- Higher rarity ships have unique build-around effects
+- Ships never rotate out of the game
 
-### 1. Ember Dreadnought (Aggro/Burn)
-- First spell each turn costs 1 less
-- Burn effects deal +1 damage
-- Units lose 1 HP (fragile)
-- **Identity:** Risk/reward glass cannon
+---
 
-### 2. Verdant Ark (Sustain/Scaling)
-- Units heal 1 each turn
-- Evolution costs reduced
-- Slower early game
-- **Identity:** Late-game scaling machine
+## Ship Part Slots (5)
 
-### 3. Tidal Observatory (Control/Draw)
-- Draw +1 first time you pass turn with unused energy
-- Spell costs +1
-- Higher hand size limit
-- **Identity:** High-skill control
+### 1. Engine
+Tempo, energy, and speed effects.
 
-### 4. Void Reaper (Corruption/Chaos)
-- 20% chance to mutate a card when played
-- Mutations can upgrade OR corrupt
-- Unstable energy spikes
-- **Identity:** Streamer chaos archetype
+| ID | Part | Effect | Rarity | Compatible |
+|----|------|--------|--------|------------|
+| SP01 | Overcharged Engine Core | +1 energy each turn | Rare | All |
+| SP02 | Rift Jump Engine | Draw 1 card on turn start | Rare | Void/Nomads |
+| SP03 | Ion Thruster Bank | Units gain +1 attack first turn | Uncommon | Scrappers |
+| SP16 | Drift Stabilizer | Reduce fracture effects | Uncommon | Nomads |
+| SP19 | Nexus Pulse Reactor | Generate extra energy every 2 turns | Epic | All |
 
-### 5. Aether Forge (Combo/Tech)
-- Relics activate twice first turn
-- Can equip extra relic
-- Units slightly weaker base stats
-- **Identity:** Combo engine players
+### 2. Weapon
+Offensive amplification.
 
-### 6. Phantom Skiff (Tempo/Trickster)
-- First unit each turn gains stealth
-- Can recall 1 unit per game
-- Lower HP cap
-- **Identity:** Skill expression class
+| ID | Part | Effect | Rarity | Compatible |
+|----|------|--------|--------|------------|
+| SP04 | Pulse Cannon Array | Ships gain +2 attack | Rare | All |
+| SP05 | Corruption Beam Emitter | Corrupt enemy with highest power | Epic | Void |
+| SP06 | Scrap Railgun | Units deal +1 damage to Nexus | Uncommon | Scrappers |
+| SP17 | Gravity Lance | Pull strongest enemy to attack | Epic | All |
 
-### 7. Titan Carrier (Midrange/Army)
-- Can summon 1 free 1/1 drone each turn
-- Wider board limit
-- Slower energy ramp
-- **Identity:** Board dominance players
+### 3. Shield
+Protection and mitigation.
 
-## Ship Part Slots (6 at launch)
+| ID | Part | Effect | Rarity | Compatible |
+|----|------|--------|--------|------------|
+| SP07 | Adaptive Shield Matrix | Ship takes -1 damage | Rare | All |
+| SP08 | Rift Barrier Field | Prevent first fracture each game | Rare | Nomads |
+| SP09 | Overload Reflector | Reflect 1 damage | Epic | Sentinels |
 
-### 1. Reactor Core (Power System)
-- **Theme:** Energy generation, overload, instability
-- **Focus:** Resource manipulation
-- Examples:
-  - Overcharge Core: If you spend all Energy, gain +1 next turn
-  - Void Reactor: Fractures cost 1 less (once per turn)
-  - Flux Matrix: 10% chance to gain bonus energy
+### 4. Sensor
+Information and utility.
 
-### 2. Engine Assembly (Mobility System)
-- **Theme:** Speed, repositioning, evasion
-- **Focus:** Turn order, activation bonuses, tempo
-- Examples:
-  - Rift Thrusters: First unit each turn gains "Strike"
-  - Slipstream Drive: Once per match, replay a unit
-  - Phase Engine: Units can't be blocked first turn
+| ID | Part | Effect | Rarity | Compatible |
+|----|------|--------|--------|------------|
+| SP10 | Long Range Scanner | See opponent next draw | Uncommon | All |
+| SP11 | Rift Mapping Array | Increase loot chance in Rift | Rare | Nomads |
+| SP12 | Corruption Radar | Corrupted enemies revealed | Rare | Void |
+| SP18 | Salvage Drone Bay | Gain bonus card after win | Rare | Scrappers |
 
-### 3. Weapon System (Offense)
-- **Theme:** Offensive amplification
-- **Focus:** Damage scaling
-- Examples:
-  - Lance Array: Void units deal +1 damage
-  - Fragment Cannon: When a unit dies, deal 1 to enemy Nexus
-  - Corruption Emitter: First attack each turn corrupts target
+### 5. Hull
+Survivability and durability.
 
-### 4. Shield Matrix (Defense)
-- **Theme:** Protection, mitigation
-- **Focus:** Survival, stall
-- Examples:
-  - Reactive Plating: First damage each turn reduced by 1
-  - Null Barrier: Prevent first Fracture effect each match
-  - Adaptive Hull: Gain shield when below 10 HP
+| ID | Part | Effect | Rarity | Compatible |
+|----|------|--------|--------|------------|
+| SP13 | Reinforced Hull Plates | Ship gains +5 health | Rare | All |
+| SP14 | Void Reactive Armor | Corrupted damage reduced | Epic | Void |
+| SP15 | Scrap Patch Framework | Heal 2 each turn | Rare | Scrappers |
+| SP20 | Quantum Hull Core | Ship cannot drop below 1 HP once | Legendary | All |
 
-### 5. Command Uplink (Tactical)
-- **Theme:** Strategic coordination
-- **Focus:** Card draw, targeting, manipulation
-- Examples:
-  - Tactical Array: Draw 1 when a unit evolves
-  - Targeting Relay: Your Fractures choose targets
-  - Combat AI: Once per turn, reroll a random effect
+---
 
-### 6. Shard Interface (Nexus Interaction)
-- **Theme:** Multiverse instability
-- **Focus:** Fracture amplification
-- Examples:
-  - Rift Amplifier: Environmental Fractures last +1 turn
-  - Instability Conduit: 20% stronger corruption
-  - Nexus Prism: Copy the first Fracture played each match
+## Slot Changes from v1
 
-## Future Slots (Post-Launch)
-- **Cargo/Utility Module** — Wildcard slot for seasonal mechanics
-- **Structural Frame** — Year 2 passive identity slot
+| v1 Slot | v2 Slot | Notes |
+|---------|---------|-------|
+| Reactor Core | — | Cut (energy handled by Engine) |
+| Engine Assembly | Engine | Kept |
+| Weapon System | Weapon | Kept |
+| Shield Matrix | Shield | Kept |
+| Command Uplink | Sensor | Renamed, focused on info/utility |
+| Shard Interface | — | Cut (no Shard alignment system) |
+| — | Hull | New slot for survivability |
 
-## Part Pool Numbers
+## Faction Compatibility
 
-| Metric | Value |
-|--------|-------|
-| Parts per slot | 15-30 available |
-| Total parts per class | ~150+ |
-| Total ultra-rare parts at launch | ~800+ |
-| Completion timeline | Months of seasonal collecting |
-
-## Design Philosophy
-
-Parts modify **RULES**, not stats.
-
-- Instead of: "+1 attack" (boring)
-- Do: "First attack corrupts" (interesting)
-
-Ask for every part: "Does this change how I play? Or just make me stronger?" Only keep the first category.
-
-## Danger: If parts become pure efficiency upgrades, game becomes gear treadmill. If parts become behavior modifiers, game becomes strategy sandbox. Choose sandbox.
+Ship parts have **Compatible Ships** restrictions:
+- **All** — works on any ship
+- **Faction-specific** — only works on ships of that faction
+- Some parts work on **2 factions** (e.g., Rift Jump Engine = Void/Nomads)

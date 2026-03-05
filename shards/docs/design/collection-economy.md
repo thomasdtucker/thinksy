@@ -1,144 +1,79 @@
-# Collection & Economy
+# Collection & Economy (v2)
 
 ## Rarity Tiers
 
-### Cards
-| Tier | Role |
-|------|------|
-| Common | Base pool |
-| Rare | Core deck staples |
-| Epic | Build-around cards |
-| Legendary | Archetype-defining |
-| Mythic | Seasonal exclusive chase |
+| Rarity | Drop Rate |
+|--------|-----------|
+| Common | 60% |
+| Uncommon | 25% |
+| Rare | 10% |
+| Epic | 4% |
+| Legendary | 1% |
 
-### Special Variants
-- Animated
-- Corrupted Variant
-- Founder Edition
-- Event-Only
+Ship parts tend to appear in **Rare+ tiers**.
 
-### Other Collectibles
-| Item | Rarity |
-|------|--------|
-| Ship Parts | Ultra Rare |
-| Harnesses | Mythic Ascendant (rarest in game) |
+## Launch Card Pool (56 cards)
 
-## Launch Card Pool
+| Type | Count | Rarity Range |
+|------|-------|-------------|
+| Ships | 6 | Starter - Legendary |
+| Ship Parts | 20 | Uncommon - Legendary |
+| Units | 15 | Common - Epic |
+| Fractures | 10 | Common - Epic |
+| Rift Bosses | 4 | Legendary (PvE) |
 
-| Rarity | Count |
-|--------|-------|
-| Common | 60 |
-| Rare | 60 |
-| Epic | 40 |
-| Legendary | 20 |
-| Mythic | 5 |
-| **Total** | **180-220** |
+### By Faction
 
-## Starter Pack (On Registration)
+| Faction | Units | Ships | Notes |
+|---------|-------|-------|-------|
+| Scrappers | 4 (U01-U04) | 1 (Rustwind Scrapper) | Aggro, cheap units |
+| Void | 3 (U05-U07) | 2 (Void Skimmer, Starbreaker Hull) | Corruption, debuffs |
+| Nomads | 3 (U08-U10) | 1 (Drift Hauler) | Card draw, exploration |
+| Sentinels | 2 (U11-U12) | 1 (Bastion Frame) | Guard, high health |
+| Wild | 3 (U13-U15) | 1 (Rift Prowler) | Fracture synergy, scaling |
 
-| Item | Details |
-|------|---------|
-| Prebuilt Starter Deck | 30 cards, balanced midrange, playable immediately |
-| Bonus Booster Packs | 4 packs (6 cards each) |
-| Guaranteed Legendary | 1 across the 4 packs |
-| Ship Blueprint Fragment | 25% completion |
-| Harness Fragment | 20% completion |
-| **Total cards** | **54** |
+## Deck Limits
 
-### Starter Deck Composition (30 cards)
-- 12 Commons
-- 10 Rares
-- 6 Epics
-- 2 "Fixed" Class Legendaries (strong but not meta-dominant)
+- **30 cards** per deck
+- Max **2 copies** of common cards
+- Max **1 copy** of legendary cards
+- Recommended: 20 Units + 6 Fractures + 4 Ship Parts
 
-### Starter Pack Results (~24 booster cards)
-- ~12 Commons
-- ~8 Rares
-- ~3 Epics
-- 1 Legendary (guaranteed)
+## Rift Exploration Rewards
 
-Every new player gets one **"Build Around" Legendary** (e.g., Blazebloom Warden, Void Ascendant, Titan Prime Carrier) for early identity. Identity = retention.
+Winning Rift encounters grants:
+- New unit cards
+- Ship parts
+- Fractures
+- Rare artifacts
 
-## Booster Pack Structure
+Encounter types:
+- Enemy scavengers
+- Corrupted fleets
+- Rift anomalies
+- Boss encounters (highest rarity rewards)
 
-**6 cards per pack** (small packs = faster dopamine, more frequent, easier to balance)
+## Strategy Archetypes
 
-### Per-Pack Distribution
-| Slot | Rarity |
-|------|--------|
-| 1-3 | Common |
-| 4-5 | Rare |
-| 6 | Epic or better (guaranteed) |
+| Archetype | Strategy | Key Faction |
+|-----------|----------|-------------|
+| Aggressive Scrapper | Fast units and nexus damage effects | Scrappers |
+| Corruption Void | Debuffs enemy units, spreads corruption | Void |
+| Nomad Rift Explorer | Card draw and Rift rewards | Nomads |
+| Sentinel Defense | High-health units, defensive bonuses | Sentinels |
 
-### Upgrade Rates
-| Upgrade | Rate |
-|---------|------|
-| Epic slot upgrades to Legendary | 1 in 8 packs |
-| Legendary upgrades to Mythic | 1 in 50 packs |
+## Seasonal Model
 
-## Duplicate System
+Each season introduces:
+- New factions
+- New ship parts
+- New Rift mechanics
 
-| Rarity | Auto-converts to dust after |
-|--------|----------------------------|
-| Common & Rare | 4 copies |
-| Epic | 2 copies |
-| Legendary | 1 copy |
+## Future Expansion Systems (Not in Core)
 
-Prevents pack frustration and wasted feeling.
-
-## Fragment System (Ships & Harnesses)
-
-Ships and Harnesses are NOT given complete. Players receive fragments:
-- Ship Blueprint Fragment: 25% at registration
-- Harness Fragment: 20% at registration
-
-Players immediately think: "How do I finish this?" — aspirational, not satisfying.
-
-## Early Progression (First 3 Days)
-
-| Day | Unlocks |
-|-----|---------|
-| 1 | Build first custom deck, unlock 5th booster pack |
-| 2 | Earn 2 more packs, unlock Ship customization screen |
-| 3 | First ranked match, earn 1 Micro-Mod |
-
-Rapid early acceleration.
-
-## Seasonal Rotation Model
-
-Each season:
-- 20% of Relics rotate out
-- New Shards introduced
-- 3 new Avatars
-- 5-10 new Ship Parts
-- New Fusion combos
-- Ships and Harnesses NEVER rotate (permanent)
-
-## Monetization Psychology
-
-Target feeling: "I can win with this." + "If I just had one more burn relic..."
-NOT: "I must spend to compete."
-
-## The Addiction Formula
-
-- New Shards every 3 months
-- Rotating relics
-- Fusion discoveries
-- Evolving digital cards
-- AI ladder for solo
-- Seasonal cosmetic rewards
-- 3 collection desires: cards, ship parts, harnesses
-- "I need that new shard" feeling always present
-
-## Launch Numbers Summary
-
-| Category | Count |
-|----------|-------|
-| Total cards | 180-220 |
-| Ship Classes | 7 |
-| Ship Part slots | 6 per ship |
-| Total Ship Parts | ~800+ |
-| Harness Types | 5 |
-| Harness Variants | ~15 |
-| Starter cards given | 54 |
-| Playable decks from start | 2 |
+Intentionally excluded from core prototype, planned for future:
+- Fusion Cards
+- Ship Part Fragments
+- Harness / Exo-Suit Equipment
+- Player Trading Markets
+- Cooperative Boss Raids
