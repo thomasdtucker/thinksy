@@ -48,6 +48,10 @@ function toCliArgs(type: string, args: Record<string, unknown>): string[] {
     return ["-m", "pipeline.cli", "seo-update"];
   }
 
+  if (type === "export") {
+    return ["-m", "pipeline.cli", "export"];
+  }
+
   if (type === "geo") {
     const category = args.category ? String(args.category) : "";
     const cities = args.cities == null ? null : Number(args.cities);

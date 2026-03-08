@@ -438,6 +438,25 @@ def seo_update() -> None:
 
 
 @app.command()
+def export(
+    output_dir: str = typer.Option("web/src/data", "--output-dir", help="Output directory for exported JSON files"),
+) -> None:
+    from .export import export_site_data
+
+    config = _get_config()
+    db = _get_db(config)
+
+    try:
+        counts = export_site_data(db, output_dir)
+        console.print(
+            "[green]✓ Export complete:[/green] "
+            f"{counts['videos']} videos, {counts['geo_pages']} geo pages -> {output_dir}"
+        )
+    finally:
+        db.close()
+
+
+@app.command()
 def web() -> None:
     """Start the Next.js frontend dev server."""
     web_dir = Path(__file__).parent.parent / "web"

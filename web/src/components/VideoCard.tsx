@@ -3,7 +3,6 @@ import { CATEGORY_LABELS } from "@/lib/types";
 
 export default function VideoCard({ video }: { video: VideoItem }) {
   const categoryLabel = CATEGORY_LABELS[video.category] || video.category;
-  const src = `/media/videos/content_${video.content_id}.mp4`;
 
   return (
     <a
@@ -11,13 +10,20 @@ export default function VideoCard({ video }: { video: VideoItem }) {
       className="group block bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-blue-600 transition-colors"
     >
       <div className="aspect-[9/16] bg-gray-800 flex items-center justify-center relative">
-        {video.video_path ? (
-          <video
-            src={src}
-            className="w-full h-full object-cover"
-            muted
-            preload="metadata"
-          />
+        {video.youtube_video_id ? (
+          <>
+            <img
+              src={`https://i.ytimg.com/vi/${video.youtube_video_id}/hqdefault.jpg`}
+              alt={video.title || video.hook}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center text-xl">
+                ▶
+              </div>
+            </div>
+          </>
         ) : (
           <div className="text-gray-600 text-4xl">▶</div>
         )}

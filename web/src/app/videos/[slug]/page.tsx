@@ -4,8 +4,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -43,12 +41,14 @@ export default async function VideoPage({ params }: Props) {
     "@type": "VideoObject",
     name: title,
     description,
-    thumbnailUrl: video.thumbnail_path
-      ? `/media/thumbs/content_${video.content_id}_thumb.jpg`
+    thumbnailUrl: video.youtube_video_id
+      ? `https://i.ytimg.com/vi/${video.youtube_video_id}/hqdefault.jpg`
       : "",
     uploadDate: video.created_at,
     duration: `PT${Math.round(video.duration_seconds)}S`,
-    contentUrl: `/media/videos/content_${video.content_id}.mp4`,
+    contentUrl: video.youtube_video_id
+      ? `https://youtube.com/shorts/${video.youtube_video_id}`
+      : "",
     publisher: {
       "@type": "Organization",
       name: "Thinksy",
@@ -70,16 +70,13 @@ export default async function VideoPage({ params }: Props) {
 
       <div className="grid md:grid-cols-2 gap-8">
         <div className="aspect-[9/16] bg-gray-900 rounded-xl overflow-hidden border border-gray-800">
-          {video.video_path ? (
-            <video
-              src={`/media/videos/content_${video.content_id}.mp4`}
-              poster={
-                video.thumbnail_path
-                  ? `/media/thumbs/content_${video.content_id}_thumb.jpg`
-                  : undefined
-              }
-              controls
-              className="w-full h-full object-cover"
+          {video.youtube_video_id ? (
+            <iframe
+              title={title}
+              src={`https://www.youtube.com/embed/${video.youtube_video_id}`}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-600">

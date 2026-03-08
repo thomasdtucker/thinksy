@@ -27,7 +27,7 @@ class Config(BaseSettings):
     youtube_refresh_token: str = ""
     db_path: str = "./data/thinksy.db"
     approval_mode: str = "human"
-    public_video_host: str = "https://thinksy.ai"
+    public_video_host: str = "https://thinksy.us"
     video_storage_dir: str = "./data/videos"
     avatar_storage_dir: str = "./data/avatars"
     google_indexing_key_path: str = ""

@@ -1,10 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getAllGeoPages, getVideos } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
-
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.SITE_URL || "https://thinksy.ai";
+  const baseUrl = process.env.SITE_URL || "https://thinksy.us";
 
   let videoEntries: MetadataRoute.Sitemap = [];
   let geoEntries: MetadataRoute.Sitemap = [];

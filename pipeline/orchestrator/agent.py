@@ -162,6 +162,15 @@ class OrchestratorAgent:
                 console.print(f"[red]✗[/red] Frontend update failed: {e}")
                 logger.exception("Frontend SEO update failed")
 
+        # Auto-export site data for Vercel deployment
+        try:
+            from ..export import export_site_data
+            counts = export_site_data(self.db, "web/src/data")
+            console.print(f"[green]\u2713[/green] Exported site data ({counts['videos']} videos, {counts['geo_pages']} geo pages)")
+        except Exception as e:
+            console.print(f"[yellow]Warning: Site data export failed: {e}[/yellow]")
+            logger.warning("Site data export failed: %s", e)
+
         console.print(f"\n[bold green]Pipeline complete! {len(approved_videos)} video(s) processed.[/bold green]")
         return approved_videos
 
@@ -241,6 +250,15 @@ class OrchestratorAgent:
                 console.print(f"[red]✗[/red] Frontend update failed: {e}")
                 logger.exception("Frontend SEO update failed")
 
+        # Auto-export site data for Vercel deployment
+        try:
+            from ..export import export_site_data
+            counts = export_site_data(self.db, "web/src/data")
+            console.print(f"[green]\u2713[/green] Exported site data ({counts['videos']} videos, {counts['geo_pages']} geo pages)")
+        except Exception as e:
+            console.print(f"[yellow]Warning: Site data export failed: {e}[/yellow]")
+            logger.warning("Site data export failed: %s", e)
+
         console.print(f"\n[bold green]Done! {len(approved_videos)} video(s) processed.[/bold green]")
         return approved_videos
 
@@ -309,6 +327,17 @@ class OrchestratorAgent:
                 self.db.update_content_status(video.content_id, ContentStatus.POSTED_YOUTUBE)
 
         console.print(f"\n[bold green]Posted {posted} video(s) fully.[/bold green]")
+
+        # Auto-export site data for Vercel deployment
+        if posted > 0:
+            try:
+                from ..export import export_site_data
+                counts = export_site_data(self.db, "web/src/data")
+                console.print(f"[green]\u2713[/green] Exported site data ({counts['videos']} videos, {counts['geo_pages']} geo pages)")
+            except Exception as e:
+                console.print(f"[yellow]Warning: Site data export failed: {e}[/yellow]")
+                logger.warning("Site data export failed: %s", e)
+
         return posted
 
     def review_pending(self) -> None:
