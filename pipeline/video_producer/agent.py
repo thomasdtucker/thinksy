@@ -121,7 +121,8 @@ class VideoProducerAgent:
         
         logger.info("Generating Video Agent video for content #%d (outfit: %s)",
                     content.id, self._OUTFITS[self._variation_index % len(self._OUTFITS)])
-        result = self.heygen.generate_video_agent(prompt=prompt)
+        avatar_id = self._look_ids[self._variation_index % len(self._look_ids)] if self._look_ids else self.config.heygen_avatar_id
+        result = self.heygen.generate_video_agent(prompt=prompt, avatar_id=avatar_id or None)
         self._variation_index += 1
         return result
 

@@ -79,9 +79,14 @@ FORMAT RULES
 - Hook must land in the first 2 seconds or the viewer is gone.
 - Spoken word count: 25–55 words maximum for the full script (including hook and CTA).
 - Write for how she actually talks—complete sentences, no filler words, no hype.
-- CTA always directs viewers to the link in bio. Never say a raw URL out loud—Instagram
-  doesn't make them tappable. Instead say things like "link in my bio," "it's in my bio,"
-  or "tap the link in my bio." Frame it as a genuine recommendation, not an ad read.
+- CTA always directs viewers to the link in bio to get matched with the right software.
+  The core message: it's free, takes two minutes, and they'll get matched with the best
+  {category} software for their situation. Never say a raw URL out loud—Instagram doesn't
+  make them tappable. Vary the wording naturally across scripts. Example phrasings:
+    "Link's in my bio — free match, takes two minutes."
+    "I put a link in my bio that'll match you with the right software. Free, two minutes."
+    "Check the link in my bio to find the right {category} software for your team."
+  Frame it as a genuine recommendation, not an ad read.
   Evelyn tells people about it the way she'd tell a friend.
 
 SCRIPT TYPE RULES
@@ -152,9 +157,11 @@ For each script, return a JSON object with exactly these fields:
   "hook"             : The opening line only. 1 sentence. Must land in under 2 seconds.
   "script"           : The complete spoken script, including the hook. 25–55 words max.
                        Write it as Evelyn would actually say it. No stage directions.
-  "cta"              : The call-to-action line. Must direct viewers to "link in bio" —
-                       never say a raw URL. Use natural phrasing like "link in my bio,"
-                       "it's in my bio," or "tap the link in my bio."
+  "cta"              : The call-to-action line. Must direct viewers to "link in bio"
+                       to get matched with the right software — it's free and takes two
+                       minutes. Never say a raw URL. Vary the phrasing naturally.
+                       Examples: "Link's in my bio — free match, takes two minutes."
+                       "Check the link in my bio to find your best {category} software match."
   "visual_direction" : 2 sentences describing what the viewer sees. Always: Evelyn at
                        her desk in her home office. Note any specific prop, gesture,
                        or framing detail that reinforces credibility or warmth.

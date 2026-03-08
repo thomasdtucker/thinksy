@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
 import { readJob, readJobLogTail } from "@/lib/server/jobStore";
+import { isAllowed } from "../../admin/_auth";
 
 export const runtime = "nodejs";
-
-function isAllowed(req: Request): boolean {
-  const token = process.env.THINKSY_ADMIN_TOKEN;
-  if (!token) return true;
-  return req.headers.get("x-admin-token") === token;
-}
 
 export async function GET(
   req: Request,

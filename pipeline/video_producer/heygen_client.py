@@ -124,6 +124,9 @@ class HeyGenClient:
     def generate_video_agent(
         self,
         prompt: str,
+        avatar_id: str | None = None,
+        orientation: str = "portrait",
+        duration_sec: int | None = None,
     ) -> tuple[str, str, str | None]:
         """Submit a Video Agent job. Returns (video_id, video_url, thumbnail_url).
 
@@ -132,9 +135,15 @@ class HeyGenClient:
         Endpoint: POST /v1/video_agent/generate
         """
         logger.info("Submitting HeyGen Video Agent job: %s", prompt[:120])
+        config: dict = {"orientation": orientation}
+        if avatar_id:
+            config["avatar_id"] = avatar_id
+        if duration_sec:
+            config["duration_sec"] = duration_sec
+        payload: dict = {"prompt": prompt, "config": config}
         resp = self.session.post(
             f"{HEYGEN_API_BASE}/v1/video_agent/generate",
-            json={"prompt": prompt},
+            json=payload,
         )
         self._check_response(resp)
         video_id = resp.json()["data"]["video_id"]
