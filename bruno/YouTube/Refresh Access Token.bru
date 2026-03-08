@@ -1,0 +1,29 @@
+meta {
+  name: Refresh Access Token
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://oauth2.googleapis.com/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  client_id: {{youtube_client_id}}
+  client_secret: {{youtube_client_secret}}
+  refresh_token: {{youtube_refresh_token}}
+  grant_type: refresh_token
+}
+
+assert {
+  res.status: eq 200
+  res.body.access_token: isDefined
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("youtube_access_token", res.body.access_token);
+  }
+}

@@ -1,0 +1,29 @@
+meta {
+  name: List My Channels
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://www.googleapis.com/youtube/v3/channels
+  body: none
+  auth: bearer
+}
+
+params:query {
+  mine: true
+  part: id,snippet
+}
+
+auth:bearer {
+  token: {{youtube_access_token}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.items: isDefined
+}
+
+docs {
+  Run "Refresh Access Token" first to populate youtube_access_token.
+}

@@ -1,0 +1,14 @@
+{
+  "id": "a820918b9d96a49801cc99fdb2c3b317",
+  "type": "scripts_generate",
+  "args": {
+    "instruction": "HR software for small businesses",
+    "count": 3,
+    "category": "hr"
+  },
+  "status": "success",
+  "createdAt": "2026-03-06T04:59:32.958Z",
+  "startedAt": "2026-03-06T04:59:32.964Z",
+  "finishedAt": "2026-03-06T04:59:44.036Z",
+  "exitCode": 0
+}

@@ -1,0 +1,6 @@
+22:59:33 [pipeline.content_strategist.agent] INFO: Generating 3 scripts for category: hr
+22:59:43 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+22:59:43 [pipeline.content_strategist.agent] INFO: Generated script #13: If you're still tracking PTO requests in a spreadsheet, you'
+22:59:43 [pipeline.content_strategist.agent] INFO: Generated script #14: You asked for the three questions—here they are.
+22:59:43 [pipeline.content_strategist.agent] INFO: Generated script #15: If you're signing an HR software contract in the next thirty
+✓ Generated 3 script draft(s)

@@ -1,0 +1,19 @@
+meta {
+  name: Get Avatars
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://api.heygen.com/v2/avatars
+  body: none
+  auth: none
+}
+
+headers {
+  X-Api-Key: {{heygen_api_key}}
+}
+
+assert {
+  res.status: eq 200
+}

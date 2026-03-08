@@ -1,0 +1,12 @@
+{
+  "id": "ded018a0c3e5c64af780af81fbf0ddbc",
+  "type": "post",
+  "args": {
+    "platform": "both"
+  },
+  "status": "error",
+  "createdAt": "2026-03-06T21:46:08.901Z",
+  "startedAt": "2026-03-06T21:46:08.904Z",
+  "finishedAt": "2026-03-06T21:46:16.384Z",
+  "exitCode": 1
+}

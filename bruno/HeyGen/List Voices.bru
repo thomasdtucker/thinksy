@@ -1,0 +1,19 @@
+meta {
+  name: List Voices
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://api.heygen.com/v2/voices
+  body: none
+  auth: none
+}
+
+headers {
+  X-Api-Key: {{heygen_api_key}}
+}
+
+assert {
+  res.status: eq 200
+}

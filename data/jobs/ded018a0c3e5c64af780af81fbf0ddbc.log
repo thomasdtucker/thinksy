@@ -1,0 +1,6 @@
+
+Posting 3 approved video(s) (both)...
+15:46:12 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+15:46:16 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+Post failed: 400 Client Error: Bad Request for url: 
+https://graph.facebook.com/v21.0/26060195926952038/media

@@ -35,3 +35,6 @@ context/.sync.log
 
 # Bruno API collection (contains secrets)
 bruno/environments/
+
+# OAuth secrets
+client_secrets.json

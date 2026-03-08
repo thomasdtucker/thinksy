@@ -1,0 +1,20 @@
+
+Generating 2 video(s)...
+23:03:17 [pipeline.video_producer.agent] INFO: Generating Video Agent video for content #8 (outfit: a tan blazer)
+23:03:17 [pipeline.video_producer.heygen_client] INFO: Submitting HeyGen Video Agent job: Create a professional short-form video ad in portrait orientation (9:16 aspect ratio). Target duration is approximately 
+23:06:53 [pipeline.shared.storage] INFO: Downloading https://files2.heygen.ai/aws_pacific/avatar_tmp/fbae38cda4884e35b5cf5d3dd5141fc9/v716cde68535e4daea106569cd6f5691e/8ff23a548f1c491ba40496c86177d3ed.mp4?Expires=1773378324&Signature=QgEd9USWf8tQcVfEmBY-VtIqvR2ttHjwCula~N45MKy6PN92aIFuvIhlaREAOqsPzAOrJMaLkugacFvijp-7TxAH8UzT1J4BmOPsNnpooVyl5LLPN8d-8N6xP6GfQzKmSmVZkTzImlQokmowCARHkGhKPGGybVASVfZms60c6iC8JSZxolD5TtHFsV8WBEIQSXvdYhl39rd4OpyQmfZ1YVoXhYyuf~PafHTL2dmlzqLfOueSEwR-Hl56-efxXltg9p2npY7CTcBhJAxOQhSgDjSF0NvfgcvkPVdm3SmnCKuQ9n26IS1CJo-ceABYlghqDllkZx6JQe8XKceqhCHlEQ__&Key-Pair-Id=K38HBHX5LX3X2H -> data/videos/content_8.mp4
+23:06:54 [pipeline.shared.storage] INFO: Downloaded data/videos/content_8.mp4 (10.5 MB)
+23:06:54 [pipeline.shared.storage] INFO: Downloading https://files2.heygen.ai/aws_pacific/avatar_tmp/fbae38cda4884e35b5cf5d3dd5141fc9/v716cde68535e4daea106569cd6f5691e/8ff23a548f1c491ba40496c86177d3ed.jpeg?Expires=1773378413&Signature=JsYYt-C9wHeYGHSYGRJCv7zxtIOcvfnBtB1PtlRhhriIIUc~ChZTPiumKRUdHToeb9LIYqS7zwCoyKv~TAygzA2UjCcQufodNJHMJjP3mXaNkSOhi3xTiGI3qmHf5Y1g3h680HBVdjMQR1GbSmBJ26KnsQjDv9CSMpRPVFlbe5ePLD-8Y5TLgfeWLAYnsbHxBjgv4bDKYDvHz0v9SLXrJLfWniBiFfZnZqr5o0ajZKFBBrhvEKDXqY1D-DsiCtaLx24eFAdrj7KkQb5xlVKhAYP2MTPSAGVjaF-GUxxA2Icb2SS0ijq0ZtcXB1LxbwTKnQQo055Zo5UjtWM~Cy9uIQ__&Key-Pair-Id=K38HBHX5LX3X2H -> data/videos/content_8_thumb.jpg
+23:06:54 [pipeline.shared.storage] INFO: Downloaded data/videos/content_8_thumb.jpg (0.5 MB)
+23:06:54 [pipeline.video_producer.agent] INFO: Video #7 generated (agent mode): data/videos/content_8.mp4
+✓ Video #7: Your HR software demo looked perfect, but three months later
+23:06:54 [pipeline.video_producer.agent] INFO: Generating Video Agent video for content #16 (outfit: a white blouse)
+23:06:54 [pipeline.video_producer.heygen_client] INFO: Submitting HeyGen Video Agent job: Create a professional short-form video ad in portrait orientation (9:16 aspect ratio). Target duration is approximately 
+23:10:29 [pipeline.shared.storage] INFO: Downloading https://files2.heygen.ai/aws_pacific/avatar_tmp/fbae38cda4884e35b5cf5d3dd5141fc9/vf9c60f3ea4e0466d9749159347f50e74/a4f9b0a78f0b4a4a887059cd6f02763f.mp4?Expires=1773378629&Signature=IbWFyrt1ghQrsg1nf9RfTc6Va2uitVpjX69Hb0TKQH5hRngEVy8wFeAZ29shRWMSIffIbvtP45NuK7WHZSVEsK-lJHcQXY42Ljo4XtKVO4IuALx9SgZ-IlyjLyYnedcCz8FiStzNycGQxWTkhCTFivzrhiRKuVa9KpOE-hkAs4zOw97uadnIZWoLlxmSbSXTMc54BPmm5QgBihg4PW35SqiwgFPphLksyerIaXCjkIgdC4825o9naxdj77C9VNjXq-5vd31pYqbGTCfGZ15he0Poj8SaB~ezKFPvVww80l0MdrrypoDFG7zSijhQGmhxAovzDYFvFIYtZl4HsQzv8w__&Key-Pair-Id=K38HBHX5LX3X2H -> data/videos/content_16.mp4
+23:10:31 [pipeline.shared.storage] INFO: Downloaded data/videos/content_16.mp4 (10.3 MB)
+23:10:31 [pipeline.shared.storage] INFO: Downloading https://files2.heygen.ai/aws_pacific/avatar_tmp/fbae38cda4884e35b5cf5d3dd5141fc9/vf9c60f3ea4e0466d9749159347f50e74/a4f9b0a78f0b4a4a887059cd6f02763f.jpeg?Expires=1773378629&Signature=p-dHu0gd-tpEkrSk65qwOJbg6BbZevd6BL4twFpJJXFEYxJ1Yk4sShBQkWXaAh94YGdyC0EA7AmIgj5B3nIhIGM8~aYeUtCUHHRbyuqYZnVGYMQu-LwKXGIUFs3voJjEg-4cBumtv-yuE78SCU2qwFcwku5fVOKLOgtbJFOmUoFFBHtXlI8BoluabNxdoL7R6NIM1VRxLVVBexqO4Sn37NmltiVbPcWnXfFJOnL1Y6WlrbncOBcqKvogLc-qKlzKPYnfnKsUIorlw1iceyO-6UrjKu9pkv5lD9GMd7LW06Xw4RZEKZx31u4ad36r2ke2o80Hjx4LDv3avoVq9R~jJQ__&Key-Pair-Id=K38HBHX5LX3X2H -> data/videos/content_16_thumb.jpg
+23:10:32 [pipeline.shared.storage] INFO: Downloaded data/videos/content_16_thumb.jpg (0.4 MB)
+23:10:32 [pipeline.video_producer.agent] INFO: Video #8 generated (agent mode): data/videos/content_16.mp4
+✓ Video #8: If your team is still tracking PTO on a spreadsheet, you're 
+
+Skipping posting (--skip-post)

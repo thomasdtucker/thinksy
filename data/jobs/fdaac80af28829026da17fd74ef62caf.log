@@ -1,0 +1,230 @@
+
+Posting 3 video(s) (both)...
+16:58:58 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:02 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:02 [pipeline.instagram.agent] ERROR: Instagram container creation failed (400): {"error":{"message":"Invalid OAuth access token - Cannot parse access token","type":"OAuthException","code":190,"fbtrace_id":"A1rVKHEK6iVEivBd59Xqf3n"}}
+✗ Instagram post failed for video #6: 400 Client Error: Bad Request for url: 
+https://graph.facebook.com/v21.0/26060195926952038/media
+16:59:02 [pipeline.orchestrator.agent] ERROR: Instagram post failed for video #6
+Traceback (most recent call last):
+  File "/Users/tux/dev/thinksy/pipeline/orchestrator/agent.py", line 283, in post_approved_videos
+    self.instagram_agent.post(video, content)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/pipeline/instagram/agent.py", line 64, in post
+    media_id = self._publish_reel(video, full_caption)
+  File "/Users/tux/dev/thinksy/pipeline/instagram/agent.py", line 115, in _publish_reel
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://graph.facebook.com/v21.0/26060195926952038/media
+16:59:11 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:11 [googleapiclient.discovery_cache] INFO: file_cache is only supported with oauth2client<4.0.0
+✗ YouTube upload failed for video #6: ('invalid_grant: Token has been expired or
+revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been 
+expired or revoked.'})
+16:59:12 [pipeline.orchestrator.agent] ERROR: YouTube upload failed for video #6
+Traceback (most recent call last):
+  File "/Users/tux/dev/thinksy/pipeline/orchestrator/agent.py", line 296, in post_approved_videos
+    self.youtube_agent.upload(video, content)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/pipeline/youtube/agent.py", line 66, in upload
+    response = self._resumable_upload(request)
+  File "/Users/tux/dev/thinksy/pipeline/youtube/agent.py", line 107, in _resumable_upload
+    status, response = request.next_chunk()
+                       ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/http.py", line 1007, in next_chunk
+    resp, content = _retry_request(
+                    ~~~~~~~~~~~~~~^
+        http,
+        ^^^^^
+    ...<7 lines>...
+        headers=start_headers,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/http.py", line 191, in _retry_request
+    resp, content = http.request(uri, method, *args, **kwargs)
+                    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google_auth_httplib2.py", line 207, in request
+    self.credentials.before_request(self._request, method, uri, request_headers)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/auth/credentials.py", line 230, in before_request
+    self._blocking_refresh(request)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/auth/credentials.py", line 193, in _blocking_refresh
+    self.refresh(request)
+    ~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/credentials.py", line 412, in refresh
+    ) = reauth.refresh_grant(
+        ~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<6 lines>...
+        enable_reauth_refresh=self._enable_reauth_refresh,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/reauth.py", line 370, in refresh_grant
+    _client._handle_error_response(response_data, retryable_error)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/_client.py", line 69, in _handle_error_response
+    raise exceptions.RefreshError(
+        error_details, response_data, retryable=retryable_error
+    )
+google.auth.exceptions.RefreshError: ('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})
+16:59:16 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:20 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:20 [pipeline.instagram.agent] ERROR: Instagram container creation failed (400): {"error":{"message":"Invalid OAuth access token - Cannot parse access token","type":"OAuthException","code":190,"fbtrace_id":"AjXf83nXFiHlTa_k3XHOPzD"}}
+✗ Instagram post failed for video #7: 400 Client Error: Bad Request for url: 
+https://graph.facebook.com/v21.0/26060195926952038/media
+16:59:20 [pipeline.orchestrator.agent] ERROR: Instagram post failed for video #7
+Traceback (most recent call last):
+  File "/Users/tux/dev/thinksy/pipeline/orchestrator/agent.py", line 283, in post_approved_videos
+    self.instagram_agent.post(video, content)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/pipeline/instagram/agent.py", line 64, in post
+    media_id = self._publish_reel(video, full_caption)
+  File "/Users/tux/dev/thinksy/pipeline/instagram/agent.py", line 115, in _publish_reel
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://graph.facebook.com/v21.0/26060195926952038/media
+16:59:31 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:31 [googleapiclient.discovery_cache] INFO: file_cache is only supported with oauth2client<4.0.0
+✗ YouTube upload failed for video #7: ('invalid_grant: Token has been expired or
+revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been 
+expired or revoked.'})
+16:59:31 [pipeline.orchestrator.agent] ERROR: YouTube upload failed for video #7
+Traceback (most recent call last):
+  File "/Users/tux/dev/thinksy/pipeline/orchestrator/agent.py", line 296, in post_approved_videos
+    self.youtube_agent.upload(video, content)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/pipeline/youtube/agent.py", line 66, in upload
+    response = self._resumable_upload(request)
+  File "/Users/tux/dev/thinksy/pipeline/youtube/agent.py", line 107, in _resumable_upload
+    status, response = request.next_chunk()
+                       ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/http.py", line 1007, in next_chunk
+    resp, content = _retry_request(
+                    ~~~~~~~~~~~~~~^
+        http,
+        ^^^^^
+    ...<7 lines>...
+        headers=start_headers,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/http.py", line 191, in _retry_request
+    resp, content = http.request(uri, method, *args, **kwargs)
+                    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google_auth_httplib2.py", line 207, in request
+    self.credentials.before_request(self._request, method, uri, request_headers)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/auth/credentials.py", line 230, in before_request
+    self._blocking_refresh(request)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/auth/credentials.py", line 193, in _blocking_refresh
+    self.refresh(request)
+    ~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/credentials.py", line 412, in refresh
+    ) = reauth.refresh_grant(
+        ~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<6 lines>...
+        enable_reauth_refresh=self._enable_reauth_refresh,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/reauth.py", line 370, in refresh_grant
+    _client._handle_error_response(response_data, retryable_error)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/_client.py", line 69, in _handle_error_response
+    raise exceptions.RefreshError(
+        error_details, response_data, retryable=retryable_error
+    )
+google.auth.exceptions.RefreshError: ('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})
+16:59:35 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:39 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:39 [pipeline.instagram.agent] ERROR: Instagram container creation failed (400): {"error":{"message":"Invalid OAuth access token - Cannot parse access token","type":"OAuthException","code":190,"fbtrace_id":"AYpnaMg2XO0X8Gcd9_e9jZu"}}
+✗ Instagram post failed for video #8: 400 Client Error: Bad Request for url: 
+https://graph.facebook.com/v21.0/26060195926952038/media
+16:59:39 [pipeline.orchestrator.agent] ERROR: Instagram post failed for video #8
+Traceback (most recent call last):
+  File "/Users/tux/dev/thinksy/pipeline/orchestrator/agent.py", line 283, in post_approved_videos
+    self.instagram_agent.post(video, content)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/pipeline/instagram/agent.py", line 64, in post
+    media_id = self._publish_reel(video, full_caption)
+  File "/Users/tux/dev/thinksy/pipeline/instagram/agent.py", line 115, in _publish_reel
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://graph.facebook.com/v21.0/26060195926952038/media
+16:59:49 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+16:59:49 [googleapiclient.discovery_cache] INFO: file_cache is only supported with oauth2client<4.0.0
+✗ YouTube upload failed for video #8: ('invalid_grant: Token has been expired or
+revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been 
+expired or revoked.'})
+16:59:49 [pipeline.orchestrator.agent] ERROR: YouTube upload failed for video #8
+Traceback (most recent call last):
+  File "/Users/tux/dev/thinksy/pipeline/orchestrator/agent.py", line 296, in post_approved_videos
+    self.youtube_agent.upload(video, content)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/pipeline/youtube/agent.py", line 66, in upload
+    response = self._resumable_upload(request)
+  File "/Users/tux/dev/thinksy/pipeline/youtube/agent.py", line 107, in _resumable_upload
+    status, response = request.next_chunk()
+                       ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/http.py", line 1007, in next_chunk
+    resp, content = _retry_request(
+                    ~~~~~~~~~~~~~~^
+        http,
+        ^^^^^
+    ...<7 lines>...
+        headers=start_headers,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/googleapiclient/http.py", line 191, in _retry_request
+    resp, content = http.request(uri, method, *args, **kwargs)
+                    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google_auth_httplib2.py", line 207, in request
+    self.credentials.before_request(self._request, method, uri, request_headers)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/auth/credentials.py", line 230, in before_request
+    self._blocking_refresh(request)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/auth/credentials.py", line 193, in _blocking_refresh
+    self.refresh(request)
+    ~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/credentials.py", line 412, in refresh
+    ) = reauth.refresh_grant(
+        ~~~~~~~~~~~~~~~~~~~~^
+        request,
+        ^^^^^^^^
+    ...<6 lines>...
+        enable_reauth_refresh=self._enable_reauth_refresh,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/reauth.py", line 370, in refresh_grant
+    _client._handle_error_response(response_data, retryable_error)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/tux/dev/thinksy/.venv/lib/python3.14/site-packages/google/oauth2/_client.py", line 69, in _handle_error_response
+    raise exceptions.RefreshError(
+        error_details, response_data, retryable=retryable_error
+    )
+google.auth.exceptions.RefreshError: ('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})
+
+Posted 0 video(s) fully.
+✓ Posted 0 video(s)

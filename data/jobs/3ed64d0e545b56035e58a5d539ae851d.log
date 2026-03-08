@@ -1,0 +1,5 @@
+
+Posting 3 approved video(s) (both)...
+15:43:57 [anthropic._base_client] INFO: Retrying request to /v1/messages in 0.464834 seconds
+15:43:57 [anthropic._base_client] INFO: Retrying request to /v1/messages in 0.927754 seconds
+Post failed: Could not reach the Anthropic API. Check your internet connection.
