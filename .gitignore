@@ -38,3 +38,4 @@ bruno/environments/
 
 # OAuth secrets
 client_secrets.json
+.vercel
