@@ -84,7 +84,7 @@ Each card has:
 
 ## Visual Card Layout
 
-Cards are **50% taller than standard TCG cards** for mirrored readability.
+Cards are **25% taller than standard TCG cards**. The bottom (player-facing) section is standard TCG height; the top adds a compact mirrored stat strip for the opponent, accounting for the extra 25%.
 
 | Section | Content |
 |---------|---------|

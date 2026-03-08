@@ -11,6 +11,7 @@ from rich.console import Console
 from rich.table import Table
 
 from .config import Config
+from .content_strategist.agent import ContentStrategistAgent
 from .db import Database
 from .models import ContentStatus, SoftwareCategory
 from .orchestrator.agent import OrchestratorAgent
@@ -32,6 +33,37 @@ def _get_db(config: Config) -> Database:
 
 
 @app.command()
+def scripts(
+    instruction: str = typer.Argument(help="What kind of content to create"),
+    count: int = typer.Option(3, "--count", "-n", help="Number of scripts to generate"),
+    category: Optional[str] = typer.Option(
+        None,
+        "--category",
+        "-c",
+        help="Force category: hr, accounting, project_management",
+    ),
+) -> None:
+    config = _get_config()
+
+    cat = None
+    if category:
+        try:
+            cat = SoftwareCategory(category)
+        except ValueError:
+            console.print(f"[red]Invalid category: {category}[/red]")
+            console.print("Valid: hr, accounting, project_management")
+            raise typer.Exit(1)
+
+    db = _get_db(config)
+    try:
+        agent = ContentStrategistAgent(config, db)
+        items = agent.generate(instruction, count=count, category=cat)
+        console.print(f"[green]✓ Generated {len(items)} script draft(s)[/green]")
+    finally:
+        db.close()
+
+
+@app.command()
 def generate(
     instruction: str = typer.Argument(
         help="What kind of content to create (e.g., 'HR software for small businesses')"
@@ -46,11 +78,17 @@ def generate(
     auto: bool = typer.Option(False, "--auto", help="Skip approval gates"),
     skip_video: bool = typer.Option(False, "--skip-video", help="Generate scripts only"),
     skip_post: bool = typer.Option(False, "--skip-post", help="Generate scripts + videos but don't post"),
+    mode: Optional[str] = typer.Option(None, "--mode", "-m", help="Video mode: avatar (default) or agent (AI video agent)"),
 ) -> None:
     """Generate content ideas, scripts, videos, and post to social media."""
     config = _get_config()
     if auto:
         config.approval_mode = "auto"
+    if mode:
+        if mode not in ("avatar", "agent"):
+            console.print("[red]Invalid mode. Use 'avatar' or 'agent'.[/red]")
+            raise typer.Exit(1)
+        config.heygen_video_mode = mode
 
     cat = None
     if category:
@@ -83,19 +121,52 @@ def generate(
 def produce(
     skip_post: bool = typer.Option(False, "--skip-post", help="Generate videos but don't post"),
     auto: bool = typer.Option(False, "--auto", help="Skip approval gate"),
+    review: bool = typer.Option(True, "--review/--no-review", help="Review videos after generation"),
     limit: Optional[int] = typer.Option(None, "--limit", "-n", help="Max number of videos to produce"),
+    mode: Optional[str] = typer.Option(None, "--mode", "-m", help="Video mode: avatar (default) or agent (AI video agent)"),
 ) -> None:
     """Generate videos for already-approved scripts."""
     config = _get_config()
     if auto:
         config.approval_mode = "auto"
+    if mode:
+        if mode not in ("avatar", "agent"):
+            console.print("[red]Invalid mode. Use 'avatar' or 'agent'.[/red]")
+            raise typer.Exit(1)
+        config.heygen_video_mode = mode
     db = _get_db(config)
     orchestrator = OrchestratorAgent(config, db)
 
     try:
-        orchestrator.produce_videos(skip_post=skip_post, limit=limit)
+        orchestrator.produce_videos(skip_post=skip_post, limit=limit, review=review)
     except RuntimeError as e:
         console.print(f"\n[red]Error:[/red] {e}")
+        raise typer.Exit(1)
+    finally:
+        db.close()
+
+
+@app.command()
+def post(
+    platform: str = typer.Option(
+        "both",
+        "--platform",
+        "-p",
+        help="Platform: instagram | youtube | both",
+    ),
+    limit: Optional[int] = typer.Option(None, "--limit", "-n", help="Max number of videos to post"),
+) -> None:
+    config = _get_config()
+    db = _get_db(config)
+    orchestrator = OrchestratorAgent(config, db)
+    try:
+        posted = orchestrator.post_approved_videos(platform=platform, limit=limit)
+        console.print(f"[green]✓ Posted {posted} video(s)[/green]")
+    except ValueError as e:
+        console.print(f"[red]{e}[/red]")
+        raise typer.Exit(1)
+    except Exception as e:
+        console.print(f"[red]Post failed:[/red] {e}")
         raise typer.Exit(1)
     finally:
         db.close()
@@ -129,6 +200,7 @@ def reset(
             console.print(f"[dim]No items with status '{from_status}'.[/dim]")
             return
         for item in items:
+            assert item.id is not None
             db.update_content_status(item.id, to_s)
         console.print(f"[green]Reset {len(items)} item(s) from '{from_status}' \u2192 '{to_status}'[/green]")
     finally:
@@ -147,6 +219,78 @@ def review() -> None:
     finally:
         db.close()
 
+
+@app.command(name="review-videos")
+def review_videos() -> None:
+    """Review generated videos — approve, reject, or open for preview."""
+    from .models import ContentStatus, Video
+    from .orchestrator.approval import display_video_for_review
+
+    config = _get_config()
+    db = _get_db(config)
+
+    try:
+        # Find videos in video_ready or video_approved that haven't been posted yet
+        videos = db.get_videos_by_status(ContentStatus.VIDEO_READY)
+        videos += db.get_videos_by_status(ContentStatus.VIDEO_APPROVED)
+
+        if not videos:
+            console.print("[dim]No videos pending review. Run 'thinksy produce' to generate videos.[/dim]")
+            return
+
+        console.print(f"\n[bold yellow]Review {len(videos)} video(s):[/bold yellow]\n")
+        approved = []
+        rejected = []
+
+        for video in videos:
+            content = db.get_content_item(video.content_id)
+            if not content:
+                continue
+
+            # Show video details
+            display_video_for_review(video, content)
+            console.print(f"  [dim]File: {video.video_path}[/dim]")
+            console.print(f"  [dim]Thumbnail: {video.thumbnail_path}[/dim]")
+            console.print(f"  [dim]Script: {content.hook}[/dim]")
+            console.print()
+
+            from rich.prompt import Prompt
+            action = Prompt.ask(
+                f"Video #{video.id}",
+                choices=["approve", "reject", "open", "skip"],
+                default="approve",
+            )
+
+            if action == "open":
+                import subprocess
+                if video.video_path:
+                    subprocess.run(["open", video.video_path])
+                # Ask again after viewing
+                action = Prompt.ask(
+                    f"Video #{video.id} (after preview)",
+                    choices=["approve", "reject", "skip"],
+                    default="approve",
+                )
+
+            if action == "approve":
+                assert video.id is not None
+                db.update_video(video.id, status=ContentStatus.VIDEO_APPROVED.value)
+                db.update_content_status(video.content_id, ContentStatus.VIDEO_APPROVED)
+                approved.append(video)
+                console.print(f"[green]✓ Video #{video.id} approved[/green]")
+            elif action == "reject":
+                assert video.id is not None
+                db.update_video(video.id, status=ContentStatus.FAILED.value)
+                db.update_content_status(video.content_id, ContentStatus.FAILED)
+                rejected.append(video)
+                console.print(f"[red]✗ Video #{video.id} rejected[/red]")
+            else:
+                console.print(f"[dim]Skipped video #{video.id}[/dim]")
+
+        console.print(f"\n[bold]{len(approved)} approved, {len(rejected)} rejected, "
+                      f"{len(videos) - len(approved) - len(rejected)} skipped[/bold]")
+    finally:
+        db.close()
 
 @app.command()
 def status() -> None:

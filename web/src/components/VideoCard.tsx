@@ -3,6 +3,7 @@ import { CATEGORY_LABELS } from "@/lib/types";
 
 export default function VideoCard({ video }: { video: VideoItem }) {
   const categoryLabel = CATEGORY_LABELS[video.category] || video.category;
+  const src = `/media/videos/content_${video.content_id}.mp4`;
 
   return (
     <a
@@ -12,7 +13,7 @@ export default function VideoCard({ video }: { video: VideoItem }) {
       <div className="aspect-[9/16] bg-gray-800 flex items-center justify-center relative">
         {video.video_path ? (
           <video
-            src={`/videos/content_${video.content_id}.mp4`}
+            src={src}
             className="w-full h-full object-cover"
             muted
             preload="metadata"

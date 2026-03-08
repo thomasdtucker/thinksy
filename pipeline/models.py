@@ -30,6 +30,7 @@ class SoftwareCategory(str, Enum):
 class ContentItem(BaseModel):
     id: Optional[int] = None
     category: SoftwareCategory
+    script_type: Optional[str] = None  # cold | warm | hot
     hook: str
     script: str
     cta: str
@@ -44,7 +45,7 @@ class ContentItem(BaseModel):
 class Video(BaseModel):
     id: Optional[int] = None
     content_id: int
-    runway_task_id: Optional[str] = None
+    heygen_video_id: Optional[str] = None
     video_path: Optional[str] = None
     thumbnail_path: Optional[str] = None
     duration_seconds: float = 5.0

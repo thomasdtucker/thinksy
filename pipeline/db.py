@@ -18,6 +18,7 @@ SCHEMA = """
 CREATE TABLE IF NOT EXISTS content_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     category TEXT NOT NULL,
+    script_type TEXT,
     hook TEXT NOT NULL,
     script TEXT NOT NULL,
     cta TEXT NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE IF NOT EXISTS content_items (
 CREATE TABLE IF NOT EXISTS videos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     content_id INTEGER NOT NULL REFERENCES content_items(id),
-    runway_task_id TEXT,
+    heygen_video_id TEXT,
     video_path TEXT,
     thumbnail_path TEXT,
     duration_seconds REAL DEFAULT 5.0,
@@ -67,6 +68,33 @@ CREATE TABLE IF NOT EXISTS workflow_log (
     details TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS seo_metadata (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    video_id INTEGER UNIQUE NOT NULL REFERENCES videos(id),
+    page_title TEXT,
+    meta_description TEXT,
+    focus_keywords TEXT,
+    og_title TEXT,
+    og_description TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS geo_pages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug TEXT UNIQUE NOT NULL,
+    category TEXT NOT NULL,
+    city TEXT NOT NULL,
+    state TEXT NOT NULL,
+    h1 TEXT,
+    meta_title TEXT,
+    meta_description TEXT,
+    intro TEXT,
+    benefits TEXT,
+    cta_text TEXT,
+    local_stat TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
 """
 
 
@@ -81,6 +109,15 @@ class Database:
 
     def _init_schema(self) -> None:
         self.conn.executescript(SCHEMA)
+        # Idempotent migrations for columns added after initial release
+        migrations = [
+            "ALTER TABLE content_items ADD COLUMN script_type TEXT",
+        ]
+        for sql in migrations:
+            try:
+                self.conn.execute(sql)
+            except Exception:
+                pass  # Column already exists
         self.conn.commit()
 
     def close(self) -> None:
@@ -91,10 +128,11 @@ class Database:
     def insert_content_item(self, item: ContentItem) -> int:
         cur = self.conn.execute(
             """INSERT INTO content_items
-               (category, hook, script, cta, visual_direction, target_url, status)
-               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+               (category, script_type, hook, script, cta, visual_direction, target_url, status)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 item.category.value,
+                item.script_type,
                 item.hook,
                 item.script,
                 item.cta,
@@ -144,11 +182,11 @@ class Database:
     def insert_video(self, video: Video) -> int:
         cur = self.conn.execute(
             """INSERT INTO videos
-               (content_id, runway_task_id, video_path, thumbnail_path, duration_seconds, status)
+               (content_id, heygen_video_id, video_path, thumbnail_path, duration_seconds, status)
                VALUES (?, ?, ?, ?, ?, ?)""",
             (
                 video.content_id,
-                video.runway_task_id,
+                video.heygen_video_id,
                 video.video_path,
                 video.thumbnail_path,
                 video.duration_seconds,
@@ -174,6 +212,13 @@ class Database:
         if row is None:
             return None
         return self._row_to_video(row)
+
+    def get_videos_by_status(self, status: ContentStatus) -> list[Video]:
+        rows = self.conn.execute(
+            "SELECT * FROM videos WHERE status = ? ORDER BY id",
+            (status.value,),
+        ).fetchall()
+        return [self._row_to_video(r) for r in rows]
 
     def update_video(self, video_id: int, **kwargs: object) -> None:
         sets = ", ".join(f"{k}=?" for k in kwargs)
@@ -251,6 +296,133 @@ class Database:
         ).fetchall()
         return [dict(r) for r in rows]
 
+    def get_unposted_videos(self, platform: str = "both") -> list[Video]:
+        """Find videos that exist but haven't been posted to one or both platforms.
+
+        Looks across all 'ready' statuses (video_approved, posted_instagram,
+        posted_youtube, completed) for videos missing platform records.
+        """
+        if platform == "instagram":
+            rows = self.conn.execute(
+                """SELECT v.* FROM videos v
+                   JOIN content_items c ON v.content_id = c.id
+                   LEFT JOIN instagram_posts i ON i.video_id = v.id
+                   WHERE i.id IS NULL
+                   AND c.status IN ('video_approved', 'posted_youtube', 'completed')
+                   ORDER BY v.id""",
+            ).fetchall()
+        elif platform == "youtube":
+            rows = self.conn.execute(
+                """SELECT v.* FROM videos v
+                   JOIN content_items c ON v.content_id = c.id
+                   LEFT JOIN youtube_uploads y ON y.video_id = v.id
+                   WHERE y.id IS NULL
+                   AND c.status IN ('video_approved', 'posted_instagram', 'completed')
+                   ORDER BY v.id""",
+            ).fetchall()
+        else:
+            # 'both': videos missing either instagram or youtube
+            rows = self.conn.execute(
+                """SELECT DISTINCT v.* FROM videos v
+                   JOIN content_items c ON v.content_id = c.id
+                   LEFT JOIN instagram_posts i ON i.video_id = v.id
+                   LEFT JOIN youtube_uploads y ON y.video_id = v.id
+                   WHERE (i.id IS NULL OR y.id IS NULL)
+                   AND c.status IN ('video_approved', 'posted_instagram', 'posted_youtube', 'completed')
+                   ORDER BY v.id""",
+            ).fetchall()
+        return [self._row_to_video(r) for r in rows]
+
+    # --- SEO Metadata ---
+
+    def upsert_seo_metadata(self, video_id: int, data: dict) -> None:
+        self.conn.execute(
+            """INSERT INTO seo_metadata
+               (video_id, page_title, meta_description, focus_keywords, og_title, og_description)
+               VALUES (?, ?, ?, ?, ?, ?)
+               ON CONFLICT(video_id) DO UPDATE SET
+               page_title=excluded.page_title,
+               meta_description=excluded.meta_description,
+               focus_keywords=excluded.focus_keywords,
+               og_title=excluded.og_title,
+               og_description=excluded.og_description""",
+            (
+                video_id,
+                data.get("page_title", ""),
+                data.get("meta_description", ""),
+                json.dumps(data.get("focus_keywords", [])),
+                data.get("og_title", ""),
+                data.get("og_description", ""),
+            ),
+        )
+        self.conn.commit()
+
+    def get_seo_metadata(self, video_id: int) -> Optional[dict]:
+        row = self.conn.execute(
+            "SELECT * FROM seo_metadata WHERE video_id = ?", (video_id,)
+        ).fetchone()
+        if row is None:
+            return None
+        return dict(row)
+
+    # --- Geo Pages ---
+
+    def insert_geo_page(self, data: dict) -> int:
+        cur = self.conn.execute(
+            """INSERT INTO geo_pages
+               (slug, category, city, state, h1, meta_title, meta_description,
+                intro, benefits, cta_text, local_stat)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                data["slug"],
+                data["category"],
+                data["city"],
+                data["state"],
+                data.get("h1", ""),
+                data.get("meta_title", ""),
+                data.get("meta_description", ""),
+                data.get("intro", ""),
+                json.dumps(data.get("benefits", [])),
+                data.get("cta_text", ""),
+                data.get("local_stat", ""),
+            ),
+        )
+        self.conn.commit()
+        return cur.lastrowid  # type: ignore[return-value]
+
+    def get_geo_page(self, slug: str) -> Optional[dict]:
+        row = self.conn.execute(
+            "SELECT * FROM geo_pages WHERE slug = ?", (slug,)
+        ).fetchone()
+        if row is None:
+            return None
+        result = dict(row)
+        result["benefits"] = json.loads(result.get("benefits") or "[]")
+        return result
+
+    def get_all_geo_pages(self) -> list[dict]:
+        rows = self.conn.execute(
+            "SELECT * FROM geo_pages ORDER BY category, city"
+        ).fetchall()
+        results = []
+        for row in rows:
+            r = dict(row)
+            r["benefits"] = json.loads(r.get("benefits") or "[]")
+            results.append(r)
+        return results
+
+    def get_geo_pages_by_category(self, category: str) -> list[dict]:
+        rows = self.conn.execute(
+            "SELECT * FROM geo_pages WHERE category = ? ORDER BY city",
+            (category,),
+        ).fetchall()
+        results = []
+        for row in rows:
+            r = dict(row)
+            r["benefits"] = json.loads(r.get("benefits") or "[]")
+            results.append(r)
+        return results
+
     # --- Helpers ---
 
     @staticmethod
@@ -258,6 +430,7 @@ class Database:
         return ContentItem(
             id=row["id"],
             category=row["category"],
+            script_type=row["script_type"],
             hook=row["hook"],
             script=row["script"],
             cta=row["cta"],
@@ -274,7 +447,7 @@ class Database:
         return Video(
             id=row["id"],
             content_id=row["content_id"],
-            runway_task_id=row["runway_task_id"],
+            heygen_video_id=row["heygen_video_id"],
             video_path=row["video_path"],
             thumbnail_path=row["thumbnail_path"],
             duration_seconds=row["duration_seconds"],

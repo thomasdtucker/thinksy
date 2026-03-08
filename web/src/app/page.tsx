@@ -1,11 +1,11 @@
 import { getVideos } from "@/lib/db";
 import VideoGrid from "@/components/VideoGrid";
-import { CATEGORY_LABELS } from "@/lib/types";
+import { CATEGORY_LABELS, type VideoItem } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export default function HomePage() {
-  let videos;
+  let videos: VideoItem[] = [];
   try {
     videos = getVideos();
   } catch {

@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import logging
-from typing import Union
+from typing import Literal, Sequence, TypeVar, cast
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
+from ..db import Database
 from ..models import ContentItem, Video
 
 console = Console()
@@ -47,27 +48,36 @@ def prompt_approval(item_id: int, stage: str) -> str:
     )
 
 
+T = TypeVar("T", ContentItem, Video)
+
+
 def approval_gate(
-    items: list[Union[ContentItem, Video]],
-    stage: str,
+    items: Sequence[T],
+    stage: Literal["script", "video"],
     mode: str,
-    db: object,
-) -> list[Union[ContentItem, Video]]:
+    db: Database,
+) -> list[T]:
     """Run approval gate. Returns approved items."""
     if mode == "auto":
         logger.info("Auto-approving %d %s items", len(items), stage)
-        return items
+        return list(items)
 
     console.print(f"\n[bold yellow]Review {len(items)} {stage}(s):[/bold yellow]\n")
-    approved = []
+    approved: list[T] = []
 
     for item in items:
-        if stage == "script" and isinstance(item, ContentItem):
-            display_content_for_review(item)
-        elif stage == "video" and isinstance(item, Video):
-            display_video_for_review(item, item)  # type: ignore
+        if stage == "script":
+            display_content_for_review(cast(ContentItem, item))
+        else:
+            v = cast(Video, item)
+            content = db.get_content_item(v.content_id)
+            if content:
+                display_video_for_review(v, content)
+            else:
+                console.print(f"[yellow]Video #{v.id} — could not load script details[/yellow]")
 
-        response = prompt_approval(item.id, stage)  # type: ignore
+        assert item.id is not None
+        response = prompt_approval(item.id, stage)
         if response == "y":
             approved.append(item)
             console.print(f"[green]✓ {stage.capitalize()} #{item.id} approved[/green]")

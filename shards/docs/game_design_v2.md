@@ -330,8 +330,9 @@ Center: - artwork zone
 
 Bottom: - card name - ability text - stat row
 
-Cards are **50% taller than standard TCG cards** to allow mirrored
-readability.
+Cards are **25% taller than standard TCG cards**. The bottom section (player-facing)
+side) is standard TCG height; the top adds a compact mirrored stat strip for the
+opponent, accounting for the extra 25%.
 
 ------------------------------------------------------------------------
 

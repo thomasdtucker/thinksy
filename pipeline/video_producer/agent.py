@@ -5,57 +5,58 @@ import logging
 from ..config import Config
 from ..db import Database
 from ..models import ContentItem, ContentStatus, Video
-from ..shared.llm import ClaudeClient
 from ..shared.storage import download_file
-from .runway_client import RunwayClient
+from .heygen_client import HeyGenClient
 
 logger = logging.getLogger(__name__)
-
-VISUAL_PROMPT_SYSTEM = """You convert video ad scripts into concise image generation prompts.
-Focus on creating a professional, clean B2B SaaS aesthetic.
-The image should be a single compelling frame that can serve as the starting point
-for a short animated video ad.
-Keep the prompt under 100 words. Do not include text overlays in the prompt."""
 
 
 class VideoProducerAgent:
     def __init__(self, config: Config, db: Database) -> None:
         self.config = config
         self.db = db
-        self.llm = ClaudeClient(config.anthropic_api_key)
-        self.runway = RunwayClient(config.runway_api_key)
+        self.heygen = HeyGenClient(
+            api_key=config.heygen_api_key,
+            avatar_id=config.heygen_avatar_id,
+            voice_id=config.heygen_voice_id,
+            avatar_scale=config.heygen_avatar_scale,
+            video_width=config.heygen_video_width,
+            video_height=config.heygen_video_height,
+        )
+        self._look_ids = config.avatar_look_id_list()
+        self._variation_index = 0  # increments with each video to cycle looks
 
     def generate(self, content: ContentItem) -> Video:
         assert content.id is not None
         self.db.update_content_status(content.id, ContentStatus.VIDEO_GENERATING)
 
-        # Step 1: Create a visual prompt from the script
-        visual_prompt = self._create_visual_prompt(content)
+        mode = self.config.heygen_video_mode
+        if mode == "agent":
+            heygen_video_id, video_url, thumbnail_url = self._generate_agent(content)
+        else:
+            heygen_video_id, video_url, thumbnail_url = self._generate_avatar(content)
 
-        # Step 2: Generate starting frame image
-        logger.info("Generating starting frame for content #%d", content.id)
-        image_url = self.runway.generate_image(visual_prompt)
-
-        # Step 3: Generate video from image + script
-        video_prompt = f"{content.hook} {content.script[:100]}"
-        logger.info("Generating video for content #%d", content.id)
-        video_url = self.runway.generate_video(
-            prompt_image_url=image_url,
-            prompt_text=video_prompt,
-            duration=5,
-            ratio="1080:1920",
-        )
-
-        # Step 4: Download video locally
+        # Download video locally
         video_path = download_file(
             url=video_url,
             dest_dir=self.config.video_storage_dir,
             filename=f"content_{content.id}.mp4",
         )
 
+        # Download thumbnail if HeyGen provided one
+        thumbnail_path = None
+        if thumbnail_url:
+            thumbnail_path = download_file(
+                url=thumbnail_url,
+                dest_dir=self.config.video_storage_dir,
+                filename=f"content_{content.id}_thumb.jpg",
+            )
+
         video = Video(
             content_id=content.id,
+            heygen_video_id=heygen_video_id,
             video_path=video_path,
+            thumbnail_path=thumbnail_path,
             status=ContentStatus.VIDEO_READY,
         )
         video.id = self.db.insert_video(video)
@@ -64,20 +65,87 @@ class VideoProducerAgent:
             content.id,
             "VideoProducerAgent",
             "video_generated",
-            {"video_id": video.id, "path": video_path},
+            {"video_id": video.id, "path": video_path, "heygen_video_id": heygen_video_id, "mode": mode},
         )
 
-        logger.info("Video #%d generated: %s", video.id, video_path)
+        logger.info("Video #%d generated (%s mode): %s", video.id, mode, video_path)
         return video
 
-    def _create_visual_prompt(self, content: ContentItem) -> str:
-        return self.llm.chat(
-            system=VISUAL_PROMPT_SYSTEM,
-            user=(
-                f"Create an image prompt for this ad.\n"
-                f"Hook: {content.hook}\n"
-                f"Script: {content.script}\n"
-                f"Category: {content.category.value}\n"
-                f"Visual direction: {content.visual_direction}"
-            ),
+    def _generate_avatar(self, content: ContentItem) -> tuple[str, str, str | None]:
+        """Classic avatar video: structured scenes with specific avatar + voice."""
+        logger.info("Generating avatar video for content #%d", content.id)
+        result = self.heygen.generate_video(
+            script=content.script,
+            title=f"content_{content.id}",
+            look_ids=self._look_ids,
+            variation_index=self._variation_index,
         )
+        self._variation_index += 1
+        return result
+
+    _OUTFITS = [
+        "a tan blazer",
+        "a white blouse",
+        "a green blazer",
+        "a tan cardigan",
+        "a white blazer",
+        "a green blouse",
+    ]
+
+    def _generate_agent(self, content: ContentItem) -> tuple[str, str, str | None]:
+        """AI Video Agent: prompt-driven with auto transitions, graphics, and music."""
+        parts = [
+            "Create a professional short-form video ad in portrait orientation (9:16 aspect ratio)."
+            " Target duration is approximately 20 seconds across 3–4 scenes."
+            " Language: English. Do not include captions.",
+            "",
+            f"Script: {content.script}",
+            "",
+            "Style: Professional, trustworthy, and clean corporate aesthetic."
+            " Soft office background.",
+            "",
+            f"Avatar: Evelyn Hartwell — a professional woman wearing"
+            f" {self._OUTFITS[self._variation_index % len(self._OUTFITS)]},"
+            f" an HR expert with 40 years of experience."
+            f" Voice should be professional and knowledgeable.",
+        ]
+        if content.visual_direction:
+            parts.append(f"\nVisual direction: {content.visual_direction}")
+        if content.cta:
+            parts.append(f"\nEnd with a clear call to action: {content.cta}")
+        parts.append(
+            "\nAdd smooth transitions between scenes, relevant supporting graphics,"
+            " and fitting professional background music."
+        )
+        prompt = "\n".join(parts)
+        
+        logger.info("Generating Video Agent video for content #%d (outfit: %s)",
+                    content.id, self._OUTFITS[self._variation_index % len(self._OUTFITS)])
+        result = self.heygen.generate_video_agent(prompt=prompt)
+        self._variation_index += 1
+        return result
+
+    def generate_avatar_image(self, prompt: str) -> str:
+        """Generate a still image of the avatar persona and save it locally.
+
+        Uses the HeyGen Photo Avatar looks API. Requires HEYGEN_AVATAR_GROUP_ID
+        to be configured. Returns the local file path.
+        """
+        if not self.config.heygen_avatar_group_id:
+            raise ValueError("HEYGEN_AVATAR_GROUP_ID must be set to generate avatar images")
+
+        image_url = self.heygen.generate_avatar_image(
+            group_id=self.config.heygen_avatar_group_id,
+            prompt=prompt,
+        )
+
+        # Use a timestamp-based filename so repeated calls don't overwrite
+        import time
+        filename = f"avatar_{int(time.time())}.jpg"
+        image_path = download_file(
+            url=image_url,
+            dest_dir=self.config.avatar_storage_dir,
+            filename=filename,
+        )
+        logger.info("Avatar image saved: %s", image_path)
+        return image_path

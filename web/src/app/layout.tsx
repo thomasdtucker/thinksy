@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,9 +24,9 @@ export default function RootLayout({
       <body className="bg-gray-950 text-gray-100 min-h-screen">
         <header className="border-b border-gray-800">
           <nav className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="/" className="text-2xl font-bold text-white">
+            <Link href="/" className="text-2xl font-bold text-white">
               Thinksy
-            </a>
+            </Link>
             <a
               href="https://www.softwareadvice.com"
               target="_blank"

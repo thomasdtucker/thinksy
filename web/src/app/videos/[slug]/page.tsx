@@ -1,6 +1,7 @@
-import { getVideoBySlug, getVideos } from "@/lib/db";
+import { getVideoBySlug } from "@/lib/db";
 import { CATEGORY_LABELS } from "@/lib/types";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -12,15 +13,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const video = getVideoBySlug(slug);
   if (!video) return { title: "Video Not Found" };
 
-  const title = video.title || video.hook;
-  const description = video.yt_description || video.script;
+  const title = video.seo_title || video.title || video.hook;
+  const description = video.seo_description || video.yt_description || video.script;
+  const ogTitle = video.og_title || title;
+  const ogDescription = video.og_description || description;
 
   return {
     title: `${title} | Thinksy`,
     description,
     openGraph: {
-      title,
-      description,
+      title: ogTitle,
+      description: ogDescription,
       type: "video.other",
     },
   };
@@ -40,10 +43,12 @@ export default async function VideoPage({ params }: Props) {
     "@type": "VideoObject",
     name: title,
     description,
-    thumbnailUrl: video.thumbnail_path || "",
+    thumbnailUrl: video.thumbnail_path
+      ? `/media/thumbs/content_${video.content_id}_thumb.jpg`
+      : "",
     uploadDate: video.created_at,
     duration: `PT${Math.round(video.duration_seconds)}S`,
-    contentUrl: `/videos/content_${video.content_id}.mp4`,
+    contentUrl: `/media/videos/content_${video.content_id}.mp4`,
     publisher: {
       "@type": "Organization",
       name: "Thinksy",
@@ -58,16 +63,21 @@ export default async function VideoPage({ params }: Props) {
       />
 
       <div className="mb-4">
-        <a href="/" className="text-blue-400 hover:underline text-sm">
+        <Link href="/" className="text-blue-400 hover:underline text-sm">
           &larr; All Videos
-        </a>
+        </Link>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
         <div className="aspect-[9/16] bg-gray-900 rounded-xl overflow-hidden border border-gray-800">
           {video.video_path ? (
             <video
-              src={`/videos/content_${video.content_id}.mp4`}
+              src={`/media/videos/content_${video.content_id}.mp4`}
+              poster={
+                video.thumbnail_path
+                  ? `/media/thumbs/content_${video.content_id}_thumb.jpg`
+                  : undefined
+              }
               controls
               className="w-full h-full object-cover"
             />

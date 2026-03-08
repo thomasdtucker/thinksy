@@ -5,7 +5,6 @@ description = "Multi-agent AI marketing pipeline for video ad generation and dis
 requires-python = ">=3.11"
 dependencies = [
     "anthropic>=0.40.0",
-    "runwayml>=0.8.0",
     "google-api-python-client>=2.150.0",
     "google-auth-oauthlib>=1.2.0",
     "requests>=2.32.0",
@@ -20,6 +19,9 @@ dependencies = [
 [project.scripts]
 thinksy = "pipeline.cli:app"
 
+[tool.setuptools.packages.find]
+include = ["pipeline*"]
+
 [build-system]
-requires = ["setuptools>=75.0"]
-build-backend = "setuptools.backends._legacy:_Backend"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

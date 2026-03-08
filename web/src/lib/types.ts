@@ -13,6 +13,10 @@ export interface VideoItem {
   title: string | null;
   yt_description: string | null;
   instagram_media_id: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  og_title: string | null;
+  og_description: string | null;
 }
 
 export const CATEGORY_LABELS: Record<string, string> = {

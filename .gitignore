@@ -32,3 +32,6 @@ Thumbs.db
 # Context sync
 context/.sync.lock
 context/.sync.log
+
+# Bruno API collection (contains secrets)
+bruno/environments/

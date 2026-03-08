@@ -19,13 +19,34 @@ class ClaudeClient:
         model: str = "claude-sonnet-4-20250514",
         max_tokens: int = 4096,
     ) -> str:
-        message = self.client.messages.create(
-            model=model,
-            max_tokens=max_tokens,
-            system=system,
-            messages=[{"role": "user", "content": user}],
-        )
-        return message.content[0].text
+        try:
+            message = self.client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                system=system,
+                messages=[{"role": "user", "content": user}],
+            )
+            return message.content[0].text
+        except anthropic.AuthenticationError:
+            raise RuntimeError(
+                "Invalid Anthropic API key. Check ANTHROPIC_API_KEY in your .env file."
+            )
+        except anthropic.BadRequestError as e:
+            msg = str(e)
+            if "credit balance" in msg.lower():
+                raise RuntimeError(
+                    "Anthropic API credits exhausted. "
+                    "Add credits at https://console.anthropic.com → Plans & Billing."
+                )
+            raise RuntimeError(f"Anthropic bad request: {msg}")
+        except anthropic.RateLimitError:
+            raise RuntimeError(
+                "Anthropic API rate limit hit. Wait a moment and try again."
+            )
+        except anthropic.APIConnectionError:
+            raise RuntimeError(
+                "Could not reach the Anthropic API. Check your internet connection."
+            )
 
     def chat_json(self, system: str, user: str, **kwargs: object) -> dict | list:
         text = self.chat(

@@ -32,6 +32,7 @@ class EngagementAgent:
         self.llm = ClaudeClient(config.anthropic_api_key)
         self.access_token = config.instagram_access_token
         self.ig_user_id = config.instagram_user_id
+        self.api_version = config.graph_api_version
         self._actions_this_hour = 0
         self._hour_start = time.time()
 
@@ -56,7 +57,7 @@ class EngagementAgent:
         """Search for recent media by hashtag via Instagram Graph API."""
         # Step 1: Get hashtag ID
         resp = requests.get(
-            "https://graph.facebook.com/v21.0/ig_hashtag_search",
+            f"https://graph.facebook.com/{self.api_version}/ig_hashtag_search",
             params={
                 "q": hashtag,
                 "user_id": self.ig_user_id,
@@ -73,7 +74,7 @@ class EngagementAgent:
 
         # Step 2: Get recent media for that hashtag
         resp = requests.get(
-            f"https://graph.facebook.com/v21.0/{hashtag_id}/recent_media",
+            f"https://graph.facebook.com/{self.api_version}/{hashtag_id}/recent_media",
             params={
                 "user_id": self.ig_user_id,
                 "fields": "id,caption,media_type",
@@ -95,7 +96,7 @@ class EngagementAgent:
         )
 
         resp = requests.post(
-            f"https://graph.facebook.com/v21.0/{media_id}/comments",
+            f"https://graph.facebook.com/{self.api_version}/{media_id}/comments",
             data={
                 "message": comment_text,
                 "access_token": self.access_token,

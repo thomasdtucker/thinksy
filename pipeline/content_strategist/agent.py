@@ -8,7 +8,7 @@ from ..db import Database
 from ..models import ContentItem, ContentStatus, SoftwareCategory
 from ..shared.llm import ClaudeClient
 from ..shared.retry import retry
-from .prompts import CLASSIFY_CATEGORY_PROMPT, GENERATE_PROMPT, SYSTEM_PROMPT
+from .prompts import CLASSIFY_CATEGORY_PROMPT, EVELYN_BIO, GENERATE_PROMPT, SYSTEM_PROMPT
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class ContentStrategistAgent:
         logger.info("Generating %d scripts for category: %s", count, category.value)
 
         scripts = self.llm.chat_json(
-            system=SYSTEM_PROMPT.format(category=category.value),
+            system=SYSTEM_PROMPT.format(bio=EVELYN_BIO, category=category.value),
             user=GENERATE_PROMPT.format(
                 count=count,
                 category=category.value,
@@ -56,6 +56,7 @@ class ContentStrategistAgent:
         for script in scripts:
             item = ContentItem(
                 category=category,
+                script_type=script.get("script_type"),
                 hook=script["hook"],
                 script=script["script"],
                 cta=script["cta"],
