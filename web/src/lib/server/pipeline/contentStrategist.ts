@@ -4,13 +4,16 @@ import { ClaudeClient } from "@/lib/server/pipeline/llm";
 import {
   ContentItem,
   ContentStatus,
+  Scene,
   SoftwareCategory,
 } from "@/lib/server/pipeline/models";
 import {
   CLASSIFY_CATEGORY_PROMPT,
   EVELYN_BIO,
   GENERATE_PROMPT,
+  SCENE_DETAILS,
   SYSTEM_PROMPT,
+  SYSTEM_PROMPT_SCENE_APPENDIX,
   pickTopics,
 } from "@/lib/server/pipeline/prompts";
 
@@ -92,8 +95,23 @@ export class ContentStrategistAgent {
 
     // Pick random topics for diversity
     const topics = pickTopics(resolvedCategory, count);
-    const topicsSection = topics
-      .map((topic, i) => `  ${i + 1}. ${topic}`)
+    const sceneCycle = Object.values(Scene);
+    const topicAssignments = topics.map((topic, i) => {
+      const scene = sceneCycle[i % sceneCycle.length];
+      return {
+        topic,
+        scene,
+        sceneDetails: SCENE_DETAILS[scene],
+      };
+    });
+    const sceneContext =
+      "For each script, follow its assigned scene details exactly. This script takes place in [setting]. " +
+      "Evelyn is wearing [wardrobe]. Time of day: [time]. Visual direction should reflect: [visual_notes].";
+    const topicsSection = topicAssignments
+      .map(
+        (assignment, i) =>
+          `  ${i + 1}. ${assignment.topic} — SCENE: ${assignment.sceneDetails.label}. This script takes place in ${assignment.sceneDetails.setting} Evelyn is wearing ${assignment.sceneDetails.wardrobe} Time of day: ${assignment.sceneDetails.time_of_day} Visual direction should reflect: ${assignment.sceneDetails.visual_notes}`
+      )
       .join("\n");
 
     // Fetch recent hooks to avoid repeats
@@ -106,13 +124,11 @@ export class ContentStrategistAgent {
     for (let attempt = 1; attempt <= 3; attempt += 1) {
       try {
         const scripts = await this.llm.chatJson(
-          SYSTEM_PROMPT.replace("{bio}", EVELYN_BIO).replaceAll(
-            "{category}",
-            resolvedCategory
-          ),
+          `${SYSTEM_PROMPT.replace("{bio}", EVELYN_BIO).replaceAll("{category}", resolvedCategory)}\n\n${SYSTEM_PROMPT_SCENE_APPENDIX}`,
           GENERATE_PROMPT.replaceAll("{count}", String(count))
             .replaceAll("{category}", resolvedCategory)
             .replace("{instruction}", instruction)
+            .replace("{scene_context}", sceneContext)
             .replace("{topics}", topicsSection)
             .replace("{recent_hooks_section}", recentHooksSection)
         );
@@ -122,19 +138,23 @@ export class ContentStrategistAgent {
         }
 
         const items: ContentItem[] = [];
-        for (const script of scripts) {
+        for (const [index, script] of scripts.entries()) {
           if (!isGeneratedScript(script)) {
             throw new Error("Claude returned invalid script shape.");
           }
 
+          const fallbackScene = sceneCycle[index % sceneCycle.length];
+          const assignedScene = topicAssignments[index]?.scene ?? fallbackScene;
+
           const item: ContentItem = {
             category: resolvedCategory,
+            scene: assignedScene,
             script_type: script.script_type ?? null,
             hook: script.hook,
             script: script.script,
             cta: script.cta,
             visual_direction: script.visual_direction ?? "",
-            target_url: "https://www.softwareadvice.com",
+            target_url: this.config.affiliate_link || "https://www.softwareadvice.com",
             status: ContentStatus.SCRIPT_DRAFT,
             created_at: new Date().toISOString(),
             approved_at: null,
@@ -145,6 +165,7 @@ export class ContentStrategistAgent {
           item.id = id;
 
           this.db.log_action(id, "ContentStrategistAgent", "generated_script", {
+            scene: assignedScene,
             script_type: script.script_type ?? null,
             hook: script.hook,
             script: script.script,

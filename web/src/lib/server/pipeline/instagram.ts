@@ -100,7 +100,7 @@ export class InstagramAgent {
   }
 
   private async _publishReel(video: Video, caption: string): Promise<string> {
-    const videoUrl = `${this.config.public_video_host}/media/videos/content_${video.content_id}.mp4`;
+    const videoUrl = video.s3_url || `${this.config.public_video_host}/media/videos/content_${video.content_id}.mp4`;
     const containerId = await this.createContainer({
       media_type: "REELS",
       video_url: videoUrl,
@@ -174,7 +174,7 @@ export class InstagramAgent {
   }
 
   private async _publishStory(video: Video): Promise<string> {
-    const videoUrl = `${this.config.public_video_host}/media/videos/content_${video.content_id}.mp4`;
+    const videoUrl = video.s3_url || `${this.config.public_video_host}/media/videos/content_${video.content_id}.mp4`;
     const containerId = await this.createContainer({
       media_type: "STORIES",
       video_url: videoUrl,

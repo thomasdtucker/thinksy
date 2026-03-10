@@ -64,9 +64,28 @@ export class Orchestrator {
     return items;
   }
 
-  async produceVideos(limit?: number): Promise<Video[]> {
-    const approvedScripts = this.db.get_items_by_status(ContentStatus.SCRIPT_APPROVED);
-    const scripts = typeof limit === "number" ? approvedScripts.slice(0, limit) : approvedScripts;
+  async produceVideos(limit?: number, contentId?: number): Promise<Video[]> {
+    let scripts: ContentItem[];
+    if (typeof contentId === "number") {
+      const item = this.db.get_content_item(contentId);
+      if (!item) {
+        log(`Content item #${contentId} not found`);
+        return [];
+      }
+      if (item.status === ContentStatus.SCRIPT_DRAFT && item.id != null) {
+        this.db.update_content_status(item.id, ContentStatus.SCRIPT_APPROVED);
+        item.status = ContentStatus.SCRIPT_APPROVED;
+        log(`Auto-approved script #${item.id} for production`);
+      }
+      if (item.status !== ContentStatus.SCRIPT_APPROVED) {
+        log(`Script #${contentId} is not in script_approved status (current: ${item.status})`);
+        return [];
+      }
+      scripts = [item];
+    } else {
+      const approvedScripts = this.db.get_items_by_status(ContentStatus.SCRIPT_APPROVED);
+      scripts = typeof limit === "number" ? approvedScripts.slice(0, limit) : approvedScripts;
+    }
     if (scripts.length === 0) {
       log("No approved scripts available for video generation");
       return [];

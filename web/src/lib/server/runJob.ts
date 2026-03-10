@@ -112,8 +112,13 @@ async function runJobAsync(id: string, type: string, args: Record<string, unknow
 
       case "videos_produce": {
         const limit = parseOptionalCount(args.limit);
-        await log(`Starting video production${typeof limit === "number" ? ` (limit=${limit})` : ""}`);
-        await orchestrator.produceVideos(limit);
+        const contentId = typeof args.contentId === "number" ? args.contentId : undefined;
+        if (contentId != null) {
+          await log(`Starting video production for content #${contentId}`);
+        } else {
+          await log(`Starting video production${typeof limit === "number" ? ` (limit=${limit})` : ""}`);
+        }
+        await orchestrator.produceVideos(limit, contentId);
         await log("Finished video production");
         break;
       }

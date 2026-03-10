@@ -25,6 +25,11 @@ export interface PipelineConfig {
   video_storage_dir: string;
   avatar_storage_dir: string;
   google_indexing_key_path: string;
+  aws_s3_bucket: string;
+  aws_s3_region: string;
+  aws_access_key_id: string;
+  aws_secret_access_key: string;
+  affiliate_link: string;
   avatar_look_id_list: () => string[];
   anthropicApiKey: string;
   heygenApiKey: string;
@@ -48,6 +53,11 @@ export interface PipelineConfig {
   videoStorageDir: string;
   avatarStorageDir: string;
   googleIndexingKeyPath: string;
+  awsS3Bucket: string;
+  awsS3Region: string;
+  awsAccessKeyId: string;
+  awsSecretAccessKey: string;
+  affiliateLink: string;
   avatarLookIdList: () => string[];
 }
 
@@ -109,6 +119,11 @@ export function getConfig(): PipelineConfig {
     video_storage_dir: resolvePath(process.env.VIDEO_STORAGE_DIR || "./data/videos"),
     avatar_storage_dir: resolvePath(process.env.AVATAR_STORAGE_DIR || "./data/avatars"),
     google_indexing_key_path: resolveOptionalPath(process.env.GOOGLE_INDEXING_KEY_PATH || ""),
+    aws_s3_bucket: process.env.AWS_S3_BUCKET || "",
+    aws_s3_region: process.env.AWS_S3_REGION || "us-east-1",
+    aws_access_key_id: process.env.AWS_ACCESS_KEY_ID || "",
+    aws_secret_access_key: process.env.AWS_SECRET_ACCESS_KEY || "",
+    affiliate_link: process.env.AFFILIATE_LINK || "https://www.softwareadvice.com",
     avatar_look_id_list: () => {
       const ids = config.heygen_avatar_look_ids
         .split(",")
@@ -139,6 +154,11 @@ export function getConfig(): PipelineConfig {
     videoStorageDir: resolvePath(process.env.VIDEO_STORAGE_DIR || "./data/videos"),
     avatarStorageDir: resolvePath(process.env.AVATAR_STORAGE_DIR || "./data/avatars"),
     googleIndexingKeyPath: resolveOptionalPath(process.env.GOOGLE_INDEXING_KEY_PATH || ""),
+    awsS3Bucket: process.env.AWS_S3_BUCKET || "",
+    awsS3Region: process.env.AWS_S3_REGION || "us-east-1",
+    awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+    awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+    affiliateLink: process.env.AFFILIATE_LINK || "https://www.softwareadvice.com",
     avatarLookIdList: () => {
       const ids = config.heygenAvatarLookIds
         .split(",")

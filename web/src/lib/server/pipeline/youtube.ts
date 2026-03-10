@@ -21,13 +21,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export async function generateYoutubeMetadata(
   llm: ClaudeClient,
   content: ContentItem,
+  config?: PipelineConfig,
 ): Promise<YoutubeMetadata> {
+  const affiliateLink = config?.affiliate_link || "https://www.softwareadvice.com";
   const result = await llm.chatJson(
-    SEO_SYSTEM,
+    SEO_SYSTEM.replace("{affiliate_link}", affiliateLink),
     SEO_PROMPT.replace("{category}", content.category)
       .replace("{hook}", content.hook)
       .replace("{script}", content.script)
-      .replace("{cta}", content.cta),
+      .replace("{cta}", content.cta)
+      .replace("{affiliate_link}", affiliateLink),
   );
 
   if (!isRecord(result)) {
@@ -66,7 +69,7 @@ export class YouTubeAgent {
       throw new Error("Video must include id, content_id, and video_path for YouTube upload");
     }
 
-    const metadata = await generateYoutubeMetadata(this.llm, content);
+    const metadata = await generateYoutubeMetadata(this.llm, content, this.config);
     const youtube = this._getService();
 
     const requestBody: youtube_v3.Schema$Video = {

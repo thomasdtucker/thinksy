@@ -25,7 +25,7 @@ export async function GET(
   }
 
   const url = new URL(req.url);
-  const metric = url.searchParams.get("metric") || "plays,reach,total_interactions";
+  const metric = url.searchParams.get("metric") || "views,reach,total_interactions";
 
   const apiVersion = process.env.GRAPH_API_VERSION || "v25.0";
   const insightsUrl = new URL(`https://graph.facebook.com/${apiVersion}/${mediaId}/insights`);

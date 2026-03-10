@@ -19,6 +19,7 @@ const SCHEMA = `
 CREATE TABLE IF NOT EXISTS content_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     category TEXT NOT NULL,
+    scene TEXT DEFAULT 'home_office',
     script_type TEXT,
     hook TEXT NOT NULL,
     script TEXT NOT NULL,
@@ -104,6 +105,7 @@ const SOFTWARE_CATEGORY_VALUES = new Set<string>(Object.values(SoftwareCategory)
 interface ContentItemRow {
   id: number;
   category: string;
+  scene: string | null;
   script_type: string | null;
   hook: string;
   script: string;
@@ -125,6 +127,7 @@ interface VideoRow {
   duration_seconds: number;
   status: string;
   created_at: string;
+  s3_url: string | null;
 }
 
 interface StatusCountRow {
@@ -232,7 +235,11 @@ export class Database {
 
   private _init_schema(): void {
     this.conn.exec(SCHEMA);
-    const migrations = ["ALTER TABLE content_items ADD COLUMN script_type TEXT"];
+    const migrations = [
+      "ALTER TABLE content_items ADD COLUMN script_type TEXT",
+      "ALTER TABLE content_items ADD COLUMN scene TEXT DEFAULT 'home_office'",
+      "ALTER TABLE videos ADD COLUMN s3_url TEXT",
+    ];
     for (const sql of migrations) {
       try {
         this.conn.exec(sql);
@@ -246,17 +253,19 @@ export class Database {
   }
 
   insert_content_item(item: ContentItem): number {
+    const scene = item.scene ?? "home_office";
     const scriptType = item.script_type ?? item.scriptType ?? null;
     const visualDirection = item.visual_direction ?? item.visualDirection ?? "";
     const targetUrl = item.target_url ?? item.targetUrl ?? "https://www.softwareadvice.com";
     const result = this.conn
       .prepare(
         `INSERT INTO content_items
-         (category, script_type, hook, script, cta, visual_direction, target_url, status)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+         (category, scene, script_type, hook, script, cta, visual_direction, target_url, status)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         item.category,
+        scene,
         scriptType,
         item.hook,
         item.script,
@@ -311,8 +320,8 @@ export class Database {
     const result = this.conn
       .prepare(
         `INSERT INTO videos
-         (content_id, heygen_video_id, video_path, thumbnail_path, duration_seconds, status)
-         VALUES (?, ?, ?, ?, ?, ?)`
+         (content_id, heygen_video_id, video_path, thumbnail_path, duration_seconds, status, s3_url)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         contentId,
@@ -320,7 +329,8 @@ export class Database {
         video.video_path ?? video.videoPath ?? null,
         video.thumbnail_path ?? video.thumbnailPath ?? null,
         video.duration_seconds ?? video.durationSeconds ?? 5.0,
-        video.status
+        video.status,
+        video.s3_url ?? video.s3Url ?? null
       );
     return Number(result.lastInsertRowid);
   }
@@ -360,6 +370,7 @@ export class Database {
       "duration_seconds",
       "status",
       "created_at",
+      "s3_url",
     ]);
 
     for (const [key] of entries) {
@@ -601,6 +612,7 @@ export class Database {
     return {
       id: row.id,
       category: normalizeSoftwareCategory(row.category),
+      scene: row.scene,
       script_type: row.script_type,
       scriptType: row.script_type,
       hook: row.hook,
@@ -633,6 +645,8 @@ export class Database {
       thumbnailPath: row.thumbnail_path,
       duration_seconds: row.duration_seconds,
       durationSeconds: row.duration_seconds,
+      s3_url: row.s3_url,
+      s3Url: row.s3_url,
       status: normalizeContentStatus(row.status),
       created_at: row.created_at,
       createdAt: row.created_at,

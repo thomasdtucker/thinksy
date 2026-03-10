@@ -5,6 +5,7 @@ import { isAllowed } from "../../_auth";
 import { getConfig } from "@/lib/server/pipeline/config";
 import { Database } from "@/lib/server/pipeline/db";
 import { ContentStatus, type Video } from "@/lib/server/pipeline/models";
+import { isS3Configured, uploadVideoToS3 } from "@/lib/server/pipeline/s3";
 
 export const runtime = "nodejs";
 
@@ -156,12 +157,21 @@ export async function POST(req: Request) {
         fs.copyFileSync(resolved, videoPath);
       }
     }
+    // Upload to S3 if configured
+    let s3Url: string | null = null;
+    if (isS3Configured(config)) {
+      s3Url = await uploadVideoToS3(config, videoPath, `content_${contentId}.mp4`);
+      if (thumbnailPath) {
+        await uploadVideoToS3(config, thumbnailPath, `content_${contentId}_thumb.jpg`);
+      }
+    }
 
     const video: Video = {
       content_id: contentId,
       heygen_video_id: resolvedHeygenId,
       video_path: videoPath,
       thumbnail_path: thumbnailPath,
+      s3_url: s3Url,
       duration_seconds: 5,
       status: ContentStatus.VIDEO_READY,
       created_at: new Date().toISOString(),

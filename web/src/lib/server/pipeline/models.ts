@@ -22,9 +22,21 @@ export const SoftwareCategory = {
 
 export type SoftwareCategory = (typeof SoftwareCategory)[keyof typeof SoftwareCategory];
 
+export const Scene = {
+  HOME_OFFICE: "home_office",
+  NEIGHBORHOOD_WALK: "neighborhood_walk",
+  LIVING_ROOM: "living_room",
+  KITCHEN_MORNING: "kitchen_morning",
+  BACKYARD_GARDEN: "backyard_garden",
+  COFFEE_SHOP: "coffee_shop",
+} as const;
+
+export type Scene = (typeof Scene)[keyof typeof Scene];
+
 export interface ContentItem {
   id?: number;
   category: SoftwareCategory;
+  scene?: string | null;
   script_type?: string | null;
   scriptType?: string | null;
   hook: string;
@@ -55,6 +67,8 @@ export interface Video {
   thumbnailPath?: string | null;
   duration_seconds: number;
   durationSeconds?: number;
+  s3_url?: string | null;
+  s3Url?: string | null;
   status: ContentStatus;
   created_at: string;
   createdAt?: string;

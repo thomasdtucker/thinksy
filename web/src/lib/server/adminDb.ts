@@ -51,6 +51,7 @@ export type ContentStatus =
 export interface ScriptRow {
   id: number;
   category: string;
+  scene: string | null;
   script_type: string | null;
   hook: string;
   script: string;
@@ -196,6 +197,15 @@ export function listInstagramPosts(): InstagramPostRow[] {
       )
       .all() as InstagramPostRow[];
     return rows;
+  } finally {
+    db.close();
+  }
+}
+
+export function deleteInstagramPost(id: number): void {
+  const db = getDbWritable();
+  try {
+    db.prepare("DELETE FROM instagram_posts WHERE id = ?").run(id);
   } finally {
     db.close();
   }

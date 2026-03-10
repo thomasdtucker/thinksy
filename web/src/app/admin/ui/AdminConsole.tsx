@@ -17,6 +17,7 @@ type JobRecord = {
 type ScriptRow = {
   id: number;
   category: string;
+  scene: string | null;
   script_type: string | null;
   hook: string;
   script: string;
@@ -25,6 +26,15 @@ type ScriptRow = {
   target_url: string;
   status: string;
   created_at: string;
+};
+
+const SCENE_LABELS: Record<string, string> = {
+  home_office: "Home Office",
+  neighborhood_walk: "Neighborhood Walk",
+  living_room: "Living Room",
+  kitchen_morning: "Kitchen Morning",
+  backyard_garden: "Backyard Garden",
+  coffee_shop: "Coffee Shop",
 };
 
 type VideoRow = {
@@ -423,6 +433,31 @@ export default function AdminConsole() {
     setIgInsights(json);
   }
 
+  async function deleteIgPost(id: number, deleteFromInstagram: boolean) {
+    if (
+      !confirm(
+        deleteFromInstagram
+          ? "Delete this post from Instagram AND the database?"
+          : "Remove this post from the database? (Instagram post will remain)"
+      )
+    )
+      return;
+    const resp = await fetch("/api/admin/instagram/posts", {
+      method: "DELETE",
+      headers,
+      body: JSON.stringify({ id, deleteFromInstagram }),
+    });
+    const json = (await resp.json().catch(() => ({}))) as Record<string, unknown>;
+    if (json.deleted) {
+      setIgPosts((prev) => prev.filter((p) => p.id !== id));
+      if (json.instagramError) {
+        alert(`Removed from DB. Instagram delete failed: ${json.instagramError}`);
+      }
+    } else {
+      alert(`Delete failed: ${json.error || "Unknown error"}`);
+    }
+  }
+
   async function fetchPartnerStack(resource: string) {
     const resp = await fetch(`/api/partnerstack/${resource}?limit=50`, {
       cache: "no-store",
@@ -783,7 +818,12 @@ export default function AdminConsole() {
                         #{s.id} · {s.category}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      {s.scene ? (
+                        <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-800 text-gray-300 border-gray-700">
+                          {SCENE_LABELS[s.scene] ?? s.scene}
+                        </span>
+                      ) : null}
                       <StatusPill status={s.status} />
                       <div className="text-xs text-gray-600">
                         {new Date(s.created_at).toLocaleString()}
@@ -802,9 +842,7 @@ export default function AdminConsole() {
                   <div className="flex items-center justify-between flex-wrap gap-2 pb-4 border-b border-gray-800">
                     <div className="text-white font-semibold">
                       Script #{selectedScript.id}
-                      <span className="text-gray-500 font-normal text-sm ml-2">
-                        {selectedScript.category}
-                      </span>
+                      <span className="text-gray-500 font-normal text-sm ml-2">{selectedScript.category}</span>
                     </div>
                     <div className="flex gap-2">
                       <button
@@ -821,7 +859,23 @@ export default function AdminConsole() {
                       >
                         Reject
                       </button>
+                      <button
+                        disabled={scriptActionInFlight || isProducingVideos}
+                        onClick={() => void start("videos_produce", { contentId: selectedScript.id })}
+                        className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5"
+                      >
+                        {isProducingVideos ? <Spinner /> : "Produce Video"}
+                      </button>
                     </div>
+                  </div>
+
+                  <div className="mt-3 flex items-center gap-2 text-xs">
+                    <span className="text-gray-500">Scene</span>
+                    <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-800 text-gray-300 border-gray-700">
+                      {selectedScript.scene
+                        ? (SCENE_LABELS[selectedScript.scene] ?? selectedScript.scene)
+                        : "Home Office"}
+                    </span>
                   </div>
 
                   <div className="mt-4 space-y-4">
@@ -1064,6 +1118,18 @@ export default function AdminConsole() {
                     >
                       View Video Page
                     </a>
+                    <button
+                      onClick={() => void deleteIgPost(p.id, true)}
+                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm"
+                    >
+                      Delete from IG & DB
+                    </button>
+                    <button
+                      onClick={() => void deleteIgPost(p.id, false)}
+                      className="bg-red-900 hover:bg-red-800 text-red-200 px-3 py-2 rounded-lg text-sm"
+                    >
+                      Remove from DB
+                    </button>
                   </div>
                 </div>
               ))}
@@ -1071,12 +1137,49 @@ export default function AdminConsole() {
 
             <div className="bg-gray-950 border border-gray-800 rounded-xl p-4">
               <h3 className="font-semibold text-white">Insights</h3>
-              <p className="text-gray-400 text-sm mt-2">
-                Loaded from Instagram Graph API (v21.0).
-              </p>
-              <pre className="mt-3 bg-black/30 border border-gray-800 rounded-lg p-3 text-xs overflow-auto max-h-[360px] whitespace-pre-wrap">
-                {igInsights ? JSON.stringify(igInsights, null, 2) : "(none loaded)"}
-              </pre>
+              {igInsights ? (
+                (() => {
+                  const data = Array.isArray((igInsights as Record<string, unknown>).data)
+                    ? ((igInsights as Record<string, unknown>).data as Array<Record<string, unknown>>)
+                    : null;
+                  if (!data) {
+                    return (
+                      <pre className="mt-3 bg-black/30 border border-gray-800 rounded-lg p-3 text-xs overflow-auto max-h-[360px] whitespace-pre-wrap">
+                        {JSON.stringify(igInsights, null, 2)}
+                      </pre>
+                    );
+                  }
+                  return (
+                    <div className="mt-3 grid grid-cols-3 gap-3">
+                      {data.map((metric) => {
+                        const name = String(metric.name || "");
+                        const values = Array.isArray(metric.values) ? metric.values as Array<Record<string, unknown>> : [];
+                        const value = values.length > 0 ? values[0].value : "—";
+                        const labels: Record<string, string> = {
+                          views: "Views",
+                          reach: "Reach",
+                          total_interactions: "Interactions",
+                          likes: "Likes",
+                          comments: "Comments",
+                          shares: "Shares",
+                          saved: "Saves",
+                        };
+                        return (
+                          <div
+                            key={name}
+                            className="bg-black/30 border border-gray-800 rounded-lg p-3 text-center"
+                          >
+                            <div className="text-2xl font-bold text-white">{String(value)}</div>
+                            <div className="text-xs text-gray-400 mt-1">{labels[name] || name}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()
+              ) : (
+                <p className="text-gray-500 text-sm mt-3">Select a post and click Load Insights.</p>
+              )}
             </div>
           </div>
         )}

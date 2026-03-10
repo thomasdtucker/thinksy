@@ -31,6 +31,7 @@ export default async function VideoPage({ params }: Props) {
   const { slug } = await params;
   const video = getVideoBySlug(slug);
   if (!video) notFound();
+  const affiliateLink = process.env.AFFILIATE_LINK || "https://www.softwareadvice.com";
 
   const title = video.title || video.hook;
   const description = video.yt_description || video.script;
@@ -98,7 +99,7 @@ export default async function VideoPage({ params }: Props) {
           </div>
 
           <a
-            href="https://www.softwareadvice.com"
+            href={affiliateLink}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"

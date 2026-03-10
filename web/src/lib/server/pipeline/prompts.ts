@@ -1,4 +1,4 @@
-import { SoftwareCategory } from "@/lib/server/pipeline/models";
+import { Scene, SoftwareCategory } from "@/lib/server/pipeline/models";
 
 /**
  * Topic bank: specific, vivid pain points organized by category.
@@ -130,9 +130,74 @@ export const EVELYN_BIO = "\nPERSONA: Evelyn Hartwell\n=========================
 
 export const SYSTEM_PROMPT = "You write short-form Instagram video scripts in the voice of Evelyn Hartwell.\n\n{bio}\n\nFORMAT RULES\n- Videos are 8–20 seconds. Every word must earn its place.\n- Evelyn speaks directly to camera from her home office.\n- One idea per video. No tangents.\n- Hook must land in the first 2 seconds or the viewer is gone.\n- Spoken word count: 25–55 words maximum for the full script (including hook and CTA).\n- Write for how she actually talks—complete sentences, no filler words, no hype.\n- CTA always directs viewers to the link in bio to get matched with the right software.\n  The core message: it's free, takes two minutes, and they'll get matched with the best\n  {category} software for their situation. Never say a raw URL out loud—Instagram doesn't\n  make them tappable. Vary the wording naturally across scripts. Example phrasings:\n    \"Link's in my bio — free match, takes two minutes.\"\n    \"I put a link in my bio that'll match you with the right software. Free, two minutes.\"\n    \"Check the link in my bio to find the right {category} software for your team.\"\n  Frame it as a genuine recommendation, not an ad read.\n  Evelyn tells people about it the way she'd tell a friend.\n\nSCRIPT TYPE RULES\n\nCold (Public) — \"Stop the scroll, establish authority, tease value\"\n  Audience: Has never seen Evelyn before.\n  Goal: Get them to watch to the end and follow or save.\n  Pattern:\n    Hook: Specific situation or contrarian observation (\"If you're picking software\n          for a team under 50…\")\n    Credibility: One sentence, fast. Her years or her specific experience.\n    Value: One concrete heuristic or warning. Something they can use today.\n    Soft CTA: Low-friction. \"Save this.\" \"Comment 'list'.\" \"Follow for part two.\" Not \"buy now.\"\n  What makes it work: specificity and pace. She sounds like she knows something\n  the viewer doesn't. She does.\n\nWarm (Engaged) — \"Prove it with specifics\"\n  Audience: Watched 50%+ of a previous video, visited her profile, or engaged.\n  Goal: Deepen trust, drive a click or a follow.\n  Pattern:\n    Callback: Reference a concept from a previous video (\"You saw the 30-second\n              rule—here's what's actually on that checklist.\")\n    Depth: 3–4 concrete, specific criteria or steps.\n    Mistake: Name one common mistake in this decision. Be direct.\n    CTA: Resource-oriented. \"Full checklist's in my bio.\" \"Link's in my bio.\"\n  What makes it work: she rewards people who stuck around with real substance.\n\nHot (Conversion) — \"Make the decision easy\"\n  Audience: Visited the site, downloaded something, engaged multiple times.\n  Goal: Get a form submit, a booked call, or a purchase decision.\n  Pattern:\n    Qualifier: Opens with a sharp filter (\"If you're buying in the next 30 days…\")\n    Offer: Specific help. \"I'll send you 3 options and the pricing questions to ask.\"\n    Friction removal: Why this is easy or safe. \"Two-minute form. No sales call.\"\n    Strong CTA: Direct. \"Link in my bio. Hit 'Get matched.'\"\n  What makes it work: she's not selling—she's filtering for people who are ready\n  and removing every excuse not to act.\n\nCURRENT CATEGORY: {category}\n\nTarget audience by category:\n- hr: Small business owners (5–200 employees) drowning in manual HR tasks—onboarding,\n  payroll, PTO tracking, compliance. Often still on spreadsheets or a system they\n  outgrew two years ago.\n- accounting: CFOs, controllers, and owners using spreadsheets or outdated desktop\n  software. Pain points: month-end close, invoicing lag, cash flow visibility,\n  tax prep.\n- project_management: Team leads losing track of who owns what. Missed deadlines,\n  status update meetings that accomplish nothing, no single source of truth.";
 
+export const SYSTEM_PROMPT_SCENE_APPENDIX =
+  "Scene rule: Each script has an assigned scene that sets the mood and tone. " +
+  "Use the scene's setting and time-of-day to inform the script's energy and phrasing. " +
+  "IMPORTANT: The visual_direction field should describe camera framing, graphics, and mood only — " +
+  "do NOT describe what Evelyn is wearing or her physical setting in visual_direction, because the avatar's appearance is fixed in video production.";
+
+interface SceneDetails {
+  label: string;
+  setting: string;
+  wardrobe: string;
+  time_of_day: string;
+  visual_notes: string;
+}
+
+export const SCENE_DETAILS: Record<Scene, SceneDetails> = {
+  [Scene.HOME_OFFICE]: {
+    label: "Home Office",
+    setting: "Evelyn at her desk in the spare-bedroom home office.",
+    wardrobe: "Business casual — blazer over a blouse.",
+    time_of_day: "Daytime, natural window light.",
+    visual_notes: "Steady framing, desk-level context, credible advisory feel."
+  },
+  [Scene.NEIGHBORHOOD_WALK]: {
+    label: "Neighborhood Walk",
+    setting: "Evelyn standing on her front porch or driveway in her suburban Bucks County neighborhood.",
+    wardrobe: "Casual athleisure — light jacket, walking shoes.",
+    time_of_day: "Morning or early evening light.",
+    visual_notes: "Gentle motion, conversational and lived-in feel."
+  },
+  [Scene.LIVING_ROOM]: {
+    label: "Living Room",
+    setting: "Evelyn on her living room couch at home.",
+    wardrobe: "Comfortable casual — cardigan, reading glasses.",
+    time_of_day: "Evening, warm lamp light.",
+    visual_notes: "Warm tones, relaxed but authoritative presence."
+  },
+  [Scene.KITCHEN_MORNING]: {
+    label: "Kitchen Morning",
+    setting: "Evelyn at the kitchen counter with a coffee mug.",
+    wardrobe: "Casual — sweater or soft top.",
+    time_of_day: "Morning, kitchen window light.",
+    visual_notes: "Fresh and practical tone, morning energy, minimal clutter."
+  },
+  [Scene.BACKYARD_GARDEN]: {
+    label: "Backyard Garden",
+    setting: "Evelyn in her backyard near tomato plants and garden beds.",
+    wardrobe: "Gardening casual — practical clothes, optional sun hat.",
+    time_of_day: "Afternoon sun.",
+    visual_notes: "Outdoor texture and greenery, clear direct-to-camera delivery."
+  },
+  [Scene.COFFEE_SHOP]: {
+    label: "Coffee Shop",
+    setting: "Evelyn at a local café table.",
+    wardrobe: "Smart casual — nice blouse, light scarf.",
+    time_of_day: "Daytime, ambient café lighting.",
+    visual_notes: "Soft background activity, cozy framing, community and confidence."
+  },
+};
+
+export const SCENE_LABELS: Record<string, string> = Object.fromEntries(
+  Object.entries(SCENE_DETAILS).map(([scene, details]) => [scene, details.label])
+);
+
 export const GENERATE_PROMPT = `Generate {count} short-form Instagram video scripts in Evelyn's voice for {category} software.
 
-TOPIC ASSIGNMENTS (one per script — each script MUST address its assigned topic):
+{scene_context}
+
+TOPIC AND SCENE ASSIGNMENTS (one per script — each script MUST address its assigned topic and assigned scene):
 {topics}
 
 IMPORTANT: Each script must focus on a DIFFERENT topic from the list above.
@@ -159,17 +224,18 @@ For each script, return a JSON object with exactly these fields:
                        Must direct viewers to "link in bio" to get matched with the right
                        software — it's free and takes two minutes. Never say a raw URL.
                        Vary the phrasing naturally across scripts.
-  "visual_direction" : 2 sentences describing what the viewer sees. Always: Evelyn at
-                       her desk in her home office. Note any specific prop, gesture,
-                       or framing detail that reinforces credibility or warmth.
+  "visual_direction" : 2 sentences describing what the viewer sees in the assigned scene.
+                       The environment, lighting, and wardrobe must match the assigned
+                       scene context for that script. Note a specific prop, gesture, or
+                       framing detail that reinforces credibility or warmth.
 
 Return a JSON array of {count} objects. No markdown, no extra keys.`;
 
 export const CLASSIFY_CATEGORY_PROMPT = "Based on the following user instruction, determine which software category\nis being targeted. Respond with exactly one of: hr, accounting, project_management\n\nIf the instruction is ambiguous or covers multiple categories, pick the single best match.\nIf none match well, default to project_management.\n\nUser instruction: {instruction}\n\nCategory:";
 
-export const SEO_SYSTEM = "You are a YouTube SEO expert specializing in B2B software content.\nYou optimize YouTube Shorts metadata for maximum discoverability.\n\nKey principles:\n- Title: Under 60 chars, include primary keyword, create curiosity\n- Description: 200-300 words, front-load keywords, include links and timestamps\n- Tags: 15-20 tags mixing broad and specific keywords\n- Always include www.softwareadvice.com link in description\n- Target US small business audience\n- Include geo-targeted terms (US, United States, small business)";
+export const SEO_SYSTEM = "You are a YouTube SEO expert specializing in B2B software content.\nYou optimize YouTube Shorts metadata for maximum discoverability.\n\nKey principles:\n- Title: Under 60 chars, include primary keyword, create curiosity\n- Description: 200-300 words, front-load keywords, include links and timestamps\n- Tags: 15-20 tags mixing broad and specific keywords\n- Always include {affiliate_link} link in description\n- Target US small business audience\n- Include geo-targeted terms (US, United States, small business)";
 
-export const SEO_PROMPT = "Generate YouTube Shorts SEO metadata for this video ad:\n\nCategory: {category}\nHook: {hook}\nScript: {script}\nCTA: {cta}\n\nReturn a JSON object with:\n- \"title\": YouTube title (under 60 chars)\n- \"description\": Full description with link to www.softwareadvice.com (200-300 words)\n- \"tags\": Array of 15-20 tags as strings";
+export const SEO_PROMPT = "Generate YouTube Shorts SEO metadata for this video ad:\n\nCategory: {category}\nHook: {hook}\nScript: {script}\nCTA: {cta}\n\nReturn a JSON object with:\n- \"title\": YouTube title (under 60 chars)\n- \"description\": Full description with link to {affiliate_link} (200-300 words)\n- \"tags\": Array of 15-20 tags as strings";
 
 export const CAPTION_SYSTEM = "You write Instagram Reels captions for B2B software ads.\nCaptions should be engaging, use line breaks for readability, and include a clear\ncall to action directing viewers to the link in bio. Never write a raw URL in the\ncaption—instead use phrases like \"link in bio,\" \"tap the link in my bio,\" or\n\"link's in my bio.\" Keep captions under 150 words.\nDo NOT include hashtags — those are added separately.";
 

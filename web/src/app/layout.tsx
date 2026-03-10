@@ -19,6 +19,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const affiliateLink = process.env.AFFILIATE_LINK || "https://www.softwareadvice.com";
   return (
     <html lang="en">
       <body className="bg-gray-950 text-gray-100 min-h-screen">
@@ -28,7 +29,7 @@ export default function RootLayout({
               Thinksy
             </Link>
             <a
-              href="https://www.softwareadvice.com"
+              href={affiliateLink}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
@@ -43,7 +44,7 @@ export default function RootLayout({
             <p>
               Find the right software for your business.{" "}
               <a
-                href="https://www.softwareadvice.com"
+                href={affiliateLink}
                 className="text-blue-400 hover:underline"
               >
                 Get free advice

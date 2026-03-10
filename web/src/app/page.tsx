@@ -3,6 +3,7 @@ import VideoGrid from "@/components/VideoGrid";
 import { CATEGORY_LABELS, type VideoItem } from "@/lib/types";
 
 export default function HomePage() {
+  const affiliateLink = process.env.AFFILIATE_LINK || "https://www.softwareadvice.com";
   let videos: VideoItem[] = [];
   try {
     videos = getVideos();
@@ -22,7 +23,7 @@ export default function HomePage() {
           Watch short video guides about HR, accounting, and project management
           software. Then{" "}
           <a
-            href="https://www.softwareadvice.com"
+            href={affiliateLink}
             className="text-blue-400 hover:underline"
           >
             talk to a free advisor
@@ -55,7 +56,7 @@ export default function HomePage() {
           free.
         </p>
         <a
-          href="https://www.softwareadvice.com"
+          href={affiliateLink}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"

@@ -5,15 +5,9 @@ import type { PipelineConfig } from "./config";
 import { Database } from "./db";
 import { HeyGenClient } from "./heygen";
 import { ContentStatus, type ContentItem, type Video } from "./models";
+import { isS3Configured, uploadVideoToS3 } from "./s3";
 
-export const OUTFITS = [
-  "a tan blazer",
-  "a white blouse",
-  "a green blazer",
-  "a tan cardigan",
-  "a white blazer",
-  "a green blouse",
-];
+// Avatar appearance is fixed in HeyGen — no outfit rotation needed
 
 function ensureDirectory(dirPath: string): void {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -79,11 +73,21 @@ export class VideoProducerAgent {
         )
       : null;
 
+    // Upload to S3 if configured
+    let s3Url: string | null = null;
+    if (isS3Configured(this.config)) {
+      s3Url = await uploadVideoToS3(this.config, videoPath, `content_${content.id}.mp4`);
+      if (thumbnailPath) {
+        await uploadVideoToS3(this.config, thumbnailPath, `content_${content.id}_thumb.jpg`);
+      }
+    }
+
     const video: Video = {
       content_id: content.id,
       heygen_video_id: result.videoId,
       video_path: videoPath,
       thumbnail_path: thumbnailPath,
+      s3_url: s3Url,
       duration_seconds: 5,
       status: ContentStatus.VIDEO_READY,
       created_at: new Date().toISOString(),
@@ -95,6 +99,7 @@ export class VideoProducerAgent {
     this.db.log_action(content.id, "VideoProducerAgent", "video_generated", {
       videoId,
       path: videoPath,
+      s3Url,
       heygenVideoId: result.videoId,
       mode,
     });
@@ -117,20 +122,16 @@ export class VideoProducerAgent {
   }
 
   private async _generateAgent(content: ContentItem): Promise<{ videoId: string; videoUrl: string; thumbnailUrl: string | null }> {
-    const outfit = OUTFITS[this.variationIndex % OUTFITS.length];
     const parts = [
       "Create a professional short-form video ad in portrait orientation (9:16 aspect ratio). Target duration is approximately 20 seconds across 3-4 scenes. Language: English. Do not include captions.",
       "",
       `Script (read exactly as written): ${content.script}`,
       "",
-      "Style: Professional, trustworthy, and clean corporate aesthetic. Soft office background.",
+      "Style: Professional, trustworthy, and clean corporate aesthetic.",
       "",
-      `Avatar: Evelyn Hartwell - a professional woman wearing ${outfit}, an HR expert with 40 years of experience. Voice should be professional and knowledgeable.`,
+      "Avatar: Evelyn Hartwell - a professional HR expert with 40 years of experience. Use the avatar exactly as provided — do not alter her appearance. Voice should be professional and knowledgeable.",
     ];
 
-    if (content.visual_direction) {
-      parts.push(`\nVisual direction: ${content.visual_direction}`);
-    }
     if (content.cta) {
       parts.push(`\nEnd with a clear call to action: ${content.cta}`);
     }

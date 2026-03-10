@@ -30,6 +30,7 @@ export default async function GeoPage({ params }: Props) {
   const { geo } = await params;
   const page = getGeoPage(geo);
   if (!page) notFound();
+  const affiliateLink = process.env.AFFILIATE_LINK || "https://www.softwareadvice.com";
 
   const categoryLabel = CATEGORY_LABELS[page.category] || page.category;
 
@@ -141,7 +142,7 @@ export default async function GeoPage({ params }: Props) {
           right tools — completely free.
         </p>
         <a
-          href="https://www.softwareadvice.com"
+          href={affiliateLink}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
