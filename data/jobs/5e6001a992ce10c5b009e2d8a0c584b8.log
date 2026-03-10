@@ -1,0 +1,6 @@
+Starting video production
+ [32m[1m✓[22m[39m Compiled in 132ms (631 modules)
+ [32m[1m✓[22m[39m Compiled in 47ms (239 modules)
+[pipeline] Video generation failed for content #30: Error: HeyGen video 254fe8f18dcc4f5da2e50a27287f20fd timed out after 900s
+[pipeline] Generated 2 videos
+Finished video production

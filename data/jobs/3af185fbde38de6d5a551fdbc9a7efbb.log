@@ -1,0 +1,6 @@
+00:14:06 [pipeline.content_strategist.agent] INFO: Generating 3 scripts for category: hr
+00:14:19 [httpx] INFO: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+00:14:19 [pipeline.content_strategist.agent] INFO: Generated script #19: If your HR system crashes during payroll week, you'll know y
+00:14:19 [pipeline.content_strategist.agent] INFO: Generated script #20: Remember that payroll test I mentioned?
+00:14:19 [pipeline.content_strategist.agent] INFO: Generated script #21: If you're signing an HR software contract in the next thirty
+✓ Generated 3 script draft(s)

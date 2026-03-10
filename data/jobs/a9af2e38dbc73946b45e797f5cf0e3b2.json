@@ -1,0 +1,14 @@
+{
+  "id": "a9af2e38dbc73946b45e797f5cf0e3b2",
+  "type": "scripts_generate",
+  "args": {
+    "instruction": "hr software",
+    "count": 3,
+    "category": "hr"
+  },
+  "status": "success",
+  "createdAt": "2026-03-08T22:35:10.509Z",
+  "startedAt": "2026-03-08T22:35:10.511Z",
+  "finishedAt": "2026-03-08T22:35:21.824Z",
+  "exitCode": 0
+}

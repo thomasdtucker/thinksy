@@ -1,0 +1,5 @@
+Starting video production for content #41
+ [32m[1m✓[22m[39m Compiled /api/jobs/[id] in 111ms (1563 modules)
+[pipeline] Generated 0 videos
+[pipeline] Video generation failed for content #41: Error: HeyGen video e6b709ca455f46de91dc28a1269bb47b timed out after 900s
+Finished video production

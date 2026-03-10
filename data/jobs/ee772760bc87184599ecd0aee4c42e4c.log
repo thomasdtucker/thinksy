@@ -1,0 +1,6 @@
+Starting scripts generation (count=3, category=hr)
+ [32m[1m✓[22m[39m Compiled /api/jobs/[id] in 105ms (1561 modules)
+ [32m[1m✓[22m[39m Compiled in 131ms (1801 modules)
+ [32m[1m✓[22m[39m Compiled /media/videos/[filename] in 236ms (1794 modules)
+Finished scripts generation
+[pipeline] Generated 3 scripts

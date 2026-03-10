@@ -1,0 +1,8 @@
+Starting posting (platform=both)
+ [32m[1m✓[22m[39m Compiled /api/jobs/[id] in 127ms (1777 modules)
+[pipeline] Instagram post failed for video #11: Error: Instagram container 17877671064522576 failed: Error: Media upload has failed with error code 2207076
+[pipeline] YouTube upload failed for video #11: Error: invalid_grant
+[pipeline] Instagram post failed for video #12: Error: Instagram container 17877671085522576 failed: Error: Media upload has failed with error code 2207076
+[pipeline] YouTube upload failed for video #12: Error: invalid_grant
+[pipeline] Posted 0 videos
+Finished posting

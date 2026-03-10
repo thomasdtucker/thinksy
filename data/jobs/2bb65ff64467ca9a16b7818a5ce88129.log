@@ -1,0 +1,5 @@
+Starting posting (platform=both)
+[pipeline] Instagram post failed for video #11: Error: Instagram container 17877675666522576 failed: Error: Media upload has failed with error code 2207076
+[pipeline] Instagram post failed for video #12: Error: Instagram container 17877675720522576 failed: Error: Media upload has failed with error code 2207076
+[pipeline] Posted 0 videos
+Finished posting
