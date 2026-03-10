@@ -94,6 +94,13 @@ export class Orchestrator {
     const videos: Video[] = [];
     for (const script of scripts) {
       try {
+        if (script.id != null) {
+          const existing = this.db.get_video_by_content_id(script.id);
+          if (existing) {
+            log(`Skipping content #${script.id} — video already exists (video #${existing.id})`);
+            continue;
+          }
+        }
         const video = await this.videoAgent.generate(script);
         videos.push(video);
       } catch (error) {
@@ -151,12 +158,15 @@ export class Orchestrator {
 
       if (igOk && ytOk) {
         this.db.update_content_status(content.id, ContentStatus.COMPLETED);
+        if (video.id != null) this.db.update_video_status(video.id, ContentStatus.COMPLETED);
         fullyPosted += 1;
         completedVideos.push(video);
       } else if (igOk) {
         this.db.update_content_status(content.id, ContentStatus.POSTED_INSTAGRAM);
+        if (video.id != null) this.db.update_video_status(video.id, ContentStatus.POSTED_INSTAGRAM);
       } else if (ytOk) {
         this.db.update_content_status(content.id, ContentStatus.POSTED_YOUTUBE);
+        if (video.id != null) this.db.update_video_status(video.id, ContentStatus.POSTED_YOUTUBE);
       }
     }
 

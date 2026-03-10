@@ -1,0 +1,11 @@
+{
+  "id": "512a312574a72d94b0065e7be609c248",
+  "type": "seo_update",
+  "args": {},
+  "status": "error",
+  "createdAt": "2026-03-10T04:39:24.410Z",
+  "startedAt": "2026-03-10T04:39:24.415Z",
+  "finishedAt": "2026-03-10T04:40:35.753Z",
+  "exitCode": 1,
+  "error": "FOREIGN KEY constraint failed"
+}

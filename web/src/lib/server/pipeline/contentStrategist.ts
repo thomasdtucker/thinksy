@@ -12,6 +12,7 @@ import {
   EVELYN_BIO,
   GENERATE_PROMPT,
   SCENE_DETAILS,
+  SCENE_OUTFITS,
   SYSTEM_PROMPT,
   SYSTEM_PROMPT_SCENE_APPENDIX,
   pickTopics,
@@ -98,9 +99,14 @@ export class ContentStrategistAgent {
     const sceneCycle = Object.values(Scene);
     const topicAssignments = topics.map((topic, i) => {
       const scene = sceneCycle[i % sceneCycle.length];
+      const outfits = SCENE_OUTFITS[scene] || [];
+      const outfit = outfits.length > 0
+        ? outfits[Math.floor(Math.random() * outfits.length)]
+        : SCENE_DETAILS[scene].wardrobe;
       return {
         topic,
         scene,
+        outfit,
         sceneDetails: SCENE_DETAILS[scene],
       };
     });
@@ -110,7 +116,7 @@ export class ContentStrategistAgent {
     const topicsSection = topicAssignments
       .map(
         (assignment, i) =>
-          `  ${i + 1}. ${assignment.topic} — SCENE: ${assignment.sceneDetails.label}. This script takes place in ${assignment.sceneDetails.setting} Evelyn is wearing ${assignment.sceneDetails.wardrobe} Time of day: ${assignment.sceneDetails.time_of_day} Visual direction should reflect: ${assignment.sceneDetails.visual_notes}`
+          `  ${i + 1}. ${assignment.topic} — SCENE: ${assignment.sceneDetails.label}. This script takes place in ${assignment.sceneDetails.setting} Evelyn is wearing ${assignment.outfit}. Time of day: ${assignment.sceneDetails.time_of_day} Visual direction should reflect: ${assignment.sceneDetails.visual_notes}`
       )
       .join("\n");
 
@@ -145,10 +151,12 @@ export class ContentStrategistAgent {
 
           const fallbackScene = sceneCycle[index % sceneCycle.length];
           const assignedScene = topicAssignments[index]?.scene ?? fallbackScene;
+          const assignedOutfit = topicAssignments[index]?.outfit ?? null;
 
           const item: ContentItem = {
             category: resolvedCategory,
             scene: assignedScene,
+            outfit: assignedOutfit,
             script_type: script.script_type ?? null,
             hook: script.hook,
             script: script.script,

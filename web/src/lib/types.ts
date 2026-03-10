@@ -13,6 +13,7 @@ export interface VideoItem {
   title: string | null;
   yt_description: string | null;
   instagram_media_id: string | null;
+  instagram_permalink: string | null;
   seo_title: string | null;
   seo_description: string | null;
   og_title: string | null;

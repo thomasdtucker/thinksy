@@ -13,6 +13,10 @@ export async function GET(req: Request) {
     "video_generating",
     "video_ready",
     "video_approved",
+    "posting",
+    "posted_instagram",
+    "posted_youtube",
+    "completed",
     "failed",
   ]);
   const status =

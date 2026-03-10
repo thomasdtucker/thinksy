@@ -5,6 +5,8 @@ import type { PipelineConfig } from "./config";
 import { Database } from "./db";
 import { HeyGenClient } from "./heygen";
 import { ContentStatus, type ContentItem, type Video } from "./models";
+import { SCENE_DETAILS } from "./prompts";
+import type { Scene } from "./models";
 import { isS3Configured, uploadVideoToS3 } from "./s3";
 
 // Avatar appearance is fixed in HeyGen — no outfit rotation needed
@@ -122,14 +124,23 @@ export class VideoProducerAgent {
   }
 
   private async _generateAgent(content: ContentItem): Promise<{ videoId: string; videoUrl: string; thumbnailUrl: string | null }> {
+    const scene = (content.scene || "home_office") as Scene;
+    const sceneDetails = SCENE_DETAILS[scene] || SCENE_DETAILS.home_office;
+    const outfit = content.outfit || sceneDetails.wardrobe;
+
     const parts = [
       "Create a professional short-form video ad in portrait orientation (9:16 aspect ratio). Target duration is approximately 20 seconds across 3-4 scenes. Language: English. Do not include captions.",
+      "",
+      `Setting: ${sceneDetails.setting}`,
+      `Outfit: Evelyn is wearing ${outfit}.`,
+      `Time of day: ${sceneDetails.time_of_day}`,
+      `Visual feel: ${sceneDetails.visual_notes}`,
       "",
       `Script (read exactly as written): ${content.script}`,
       "",
       "Style: Professional, trustworthy, and clean corporate aesthetic.",
       "",
-      "Avatar: Evelyn Hartwell - a professional HR expert with 40 years of experience. Use the avatar exactly as provided — do not alter her appearance. Voice should be professional and knowledgeable.",
+      "Avatar: Evelyn Hartwell - a professional HR expert with 40 years of experience. Voice should be professional and knowledgeable.",
     ];
 
     if (content.cta) {

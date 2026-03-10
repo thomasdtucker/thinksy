@@ -75,12 +75,14 @@ export class InstagramAgent {
     const fullCaption = `${caption}\n\n${hashtagStr}`;
 
     const mediaId = await this._publishReel(video, fullCaption);
+    const permalink = await this._fetchPermalink(mediaId);
     const post: InstagramPost = {
       video_id: video.id,
       instagram_media_id: mediaId,
       caption: fullCaption,
       hashtags,
       posted_at: new Date().toISOString(),
+      permalink,
     };
 
     post.id = this.db.insert_instagram_post(post);
@@ -135,6 +137,20 @@ export class InstagramAgent {
       throw new Error("Instagram publish response id is not a string");
     }
     return idValue;
+  }
+
+  private async _fetchPermalink(mediaId: string): Promise<string | null> {
+    try {
+      const url = new URL(`https://graph.facebook.com/${this.config.graph_api_version}/${mediaId}`);
+      url.searchParams.set("fields", "permalink");
+      url.searchParams.set("access_token", this.config.instagram_access_token);
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const body = (await res.json()) as Record<string, unknown>;
+      return typeof body.permalink === "string" ? body.permalink : null;
+    } catch {
+      return null;
+    }
   }
 
   private async _waitForContainer(containerId: string, timeoutSeconds = 300): Promise<void> {

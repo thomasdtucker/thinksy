@@ -239,6 +239,8 @@ export class Database {
       "ALTER TABLE content_items ADD COLUMN script_type TEXT",
       "ALTER TABLE content_items ADD COLUMN scene TEXT DEFAULT 'home_office'",
       "ALTER TABLE videos ADD COLUMN s3_url TEXT",
+      "ALTER TABLE content_items ADD COLUMN outfit TEXT",
+      "ALTER TABLE instagram_posts ADD COLUMN permalink TEXT",
     ];
     for (const sql of migrations) {
       try {
@@ -257,15 +259,17 @@ export class Database {
     const scriptType = item.script_type ?? item.scriptType ?? null;
     const visualDirection = item.visual_direction ?? item.visualDirection ?? "";
     const targetUrl = item.target_url ?? item.targetUrl ?? "https://www.softwareadvice.com";
+    const outfit = item.outfit ?? null;
     const result = this.conn
       .prepare(
         `INSERT INTO content_items
-         (category, scene, script_type, hook, script, cta, visual_direction, target_url, status)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+         (category, scene, outfit, script_type, hook, script, cta, visual_direction, target_url, status)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         item.category,
         scene,
+        outfit,
         scriptType,
         item.hook,
         item.script,
@@ -310,6 +314,10 @@ export class Database {
     }
 
     this.conn.prepare("UPDATE content_items SET status = ? WHERE id = ?").run(status, item_id);
+  }
+
+  update_video_status(video_id: number, status: string): void {
+    this.conn.prepare("UPDATE videos SET status = ? WHERE id = ?").run(status, video_id);
   }
 
   insert_video(video: Video): number {
@@ -401,15 +409,16 @@ export class Database {
     const result = this.conn
       .prepare(
         `INSERT INTO instagram_posts
-         (video_id, instagram_media_id, caption, hashtags, posted_at)
-         VALUES (?, ?, ?, ?, ?)`
+         (video_id, instagram_media_id, caption, hashtags, posted_at, permalink)
+         VALUES (?, ?, ?, ?, ?, ?)`
       )
       .run(
         videoId,
         post.instagram_media_id ?? post.instagramMediaId ?? null,
         post.caption,
         JSON.stringify(post.hashtags),
-        postedAt
+        postedAt,
+        post.permalink ?? null
       );
     return Number(result.lastInsertRowid);
   }
@@ -443,7 +452,7 @@ export class Database {
     return Number(result.lastInsertRowid);
   }
 
-  log_action(content_id: number, agent: string, action: string, details: Record<string, unknown>): void {
+  log_action(content_id: number | null, agent: string, action: string, details: Record<string, unknown>): void {
     this.conn
       .prepare(
         "INSERT INTO workflow_log (content_id, agent, action, details) VALUES (?, ?, ?, ?)"
@@ -488,9 +497,9 @@ export class Database {
         .prepare(
           `SELECT v.* FROM videos v
            JOIN content_items c ON v.content_id = c.id
-           LEFT JOIN instagram_posts i ON i.video_id = v.id
-           WHERE i.id IS NULL
-           AND c.status IN ('video_approved', 'posted_youtube', 'completed')
+           WHERE c.status IN ('video_approved', 'posted_youtube')
+           AND NOT EXISTS (SELECT 1 FROM instagram_posts i2 WHERE i2.video_id IN (SELECT v2.id FROM videos v2 WHERE v2.content_id = c.id))
+           AND v.id = (SELECT MAX(v3.id) FROM videos v3 WHERE v3.content_id = c.id)
            ORDER BY v.id`
         )
         .all() as VideoRow[];
@@ -499,21 +508,23 @@ export class Database {
         .prepare(
           `SELECT v.* FROM videos v
            JOIN content_items c ON v.content_id = c.id
-           LEFT JOIN youtube_uploads y ON y.video_id = v.id
-           WHERE y.id IS NULL
-           AND c.status IN ('video_approved', 'posted_instagram', 'completed')
+           WHERE c.status IN ('video_approved', 'posted_instagram')
+           AND NOT EXISTS (SELECT 1 FROM youtube_uploads y2 WHERE y2.video_id IN (SELECT v2.id FROM videos v2 WHERE v2.content_id = c.id))
+           AND v.id = (SELECT MAX(v3.id) FROM videos v3 WHERE v3.content_id = c.id)
            ORDER BY v.id`
         )
         .all() as VideoRow[];
     } else {
       rows = this.conn
         .prepare(
-          `SELECT DISTINCT v.* FROM videos v
+          `SELECT v.* FROM videos v
            JOIN content_items c ON v.content_id = c.id
-           LEFT JOIN instagram_posts i ON i.video_id = v.id
-           LEFT JOIN youtube_uploads y ON y.video_id = v.id
-           WHERE (i.id IS NULL OR y.id IS NULL)
-           AND c.status IN ('video_approved', 'posted_instagram', 'posted_youtube', 'completed')
+           WHERE c.status = 'video_approved'
+           AND (
+             NOT EXISTS (SELECT 1 FROM instagram_posts i2 WHERE i2.video_id IN (SELECT v2.id FROM videos v2 WHERE v2.content_id = c.id))
+             OR NOT EXISTS (SELECT 1 FROM youtube_uploads y2 WHERE y2.video_id IN (SELECT v2.id FROM videos v2 WHERE v2.content_id = c.id))
+           )
+           AND v.id = (SELECT MAX(v3.id) FROM videos v3 WHERE v3.content_id = c.id)
            ORDER BY v.id`
         )
         .all() as VideoRow[];

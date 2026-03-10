@@ -35,6 +35,7 @@ export function exportSiteData(db: Database): { videos: number; geoPages: number
       title: getString("title") || null,
       yt_description: getString("yt_description") || null,
       instagram_media_id: getString("instagram_media_id") || null,
+      instagram_permalink: getString("instagram_permalink") || getString("permalink") || null,
       seo_title: seo?.page_title ?? null,
       seo_description: seo?.meta_description ?? null,
       og_title: seo?.og_title ?? null,

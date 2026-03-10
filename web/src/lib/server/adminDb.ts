@@ -52,6 +52,7 @@ export interface ScriptRow {
   id: number;
   category: string;
   scene: string | null;
+  outfit: string | null;
   script_type: string | null;
   hook: string;
   script: string;
@@ -109,7 +110,7 @@ export function listScripts(status?: ContentStatus): ScriptRow[] {
 
 export function updateScript(
   id: number,
-  patch: Partial<Pick<ScriptRow, "hook" | "script" | "cta" | "visual_direction" | "target_url" | "script_type">>
+  patch: Partial<Pick<ScriptRow, "hook" | "script" | "cta" | "visual_direction" | "target_url" | "script_type" | "scene" | "outfit">>
 ): void {
   const keys = Object.keys(patch) as (keyof typeof patch)[];
   if (keys.length === 0) return;
@@ -120,6 +121,8 @@ export function updateScript(
     "visual_direction",
     "target_url",
     "script_type",
+    "scene",
+    "outfit",
   ]);
   for (const k of keys) {
     if (!allowed.has(k as string)) {
@@ -163,10 +166,10 @@ export function setContentStatus(
 export function listVideos(status?: ContentStatus): VideoRow[] {
   const db = getDbWritable();
   try {
-    const sql = `SELECT v.*, c.hook, c.script, c.cta, c.category
+    const sql = `SELECT v.*, c.hook, c.script, c.cta, c.category, c.status as content_status
                  FROM videos v
                  JOIN content_items c ON c.id = v.content_id
-                 ${status ? "WHERE v.status = ?" : ""}
+                 ${status ? "WHERE c.status = ?" : ""}
                  ORDER BY v.id DESC`;
     const stmt = db.prepare(sql);
     return (status ? stmt.all(status) : stmt.all()) as VideoRow[];
@@ -206,6 +209,71 @@ export function deleteInstagramPost(id: number): void {
   const db = getDbWritable();
   try {
     db.prepare("DELETE FROM instagram_posts WHERE id = ?").run(id);
+  } finally {
+    db.close();
+  }
+}
+
+export interface SiteVideoRow {
+  id: number;
+  content_id: number;
+  video_path: string | null;
+  thumbnail_path: string | null;
+  duration_seconds: number;
+  created_at: string;
+  hook: string;
+  script: string;
+  cta: string;
+  category: string;
+  youtube_video_id: string | null;
+  title: string | null;
+  yt_description: string | null;
+  instagram_media_id: string | null;
+  instagram_permalink: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  og_title: string | null;
+  og_description: string | null;
+}
+
+export function getCompletedVideosForSite(): SiteVideoRow[] {
+  const db = getDbWritable();
+  try {
+    const rows = db
+      .prepare(
+        `SELECT
+          v.id,
+          v.content_id,
+          COALESCE(v.s3_url, v.video_path) as video_path,
+          v.thumbnail_path,
+          v.duration_seconds,
+          v.created_at,
+          c.hook,
+          c.script,
+          c.cta,
+          c.category,
+          y.youtube_video_id,
+          y.title,
+          y.description as yt_description,
+          i.instagram_media_id,
+          i.permalink as instagram_permalink,
+          s.page_title as seo_title,
+          s.meta_description as seo_description,
+          s.og_title,
+          s.og_description
+        FROM content_items c
+        JOIN videos v ON v.content_id = c.id
+          AND v.id = (SELECT MAX(v2.id) FROM videos v2 WHERE v2.content_id = c.id)
+        LEFT JOIN youtube_uploads y ON y.video_id = v.id
+          AND y.id = (SELECT MAX(y2.id) FROM youtube_uploads y2 WHERE y2.video_id = v.id)
+        LEFT JOIN instagram_posts i ON i.video_id = v.id
+          AND i.id = (SELECT MAX(i2.id) FROM instagram_posts i2 WHERE i2.video_id = v.id)
+        LEFT JOIN seo_metadata s ON s.video_id = v.id
+        WHERE c.status = 'completed'
+        ORDER BY v.id DESC`
+      )
+      .all() as SiteVideoRow[];
+    return rows;
   } finally {
     db.close();
   }

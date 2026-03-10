@@ -1,0 +1,9 @@
+Starting video production for content #39
+ [32m[1m✓[22m[39m Compiled /api/jobs/[id] in 180ms (1660 modules)
+ [32m[1m✓[22m[39m Compiled /media/videos/[filename] in 103ms (494 modules)
+ [32m[1m✓[22m[39m Compiled /[geo] in 91ms (512 modules)
+ [32m[1m✓[22m[39m Compiled /api/admin/instagram/posts in 40ms (516 modules)
+ [32m[1m✓[22m[39m Compiled (520 modules)
+ [32m[1m✓[22m[39m Compiled /api/admin/videos/import in 163ms (881 modules)
+[pipeline] Generated 1 videos
+Finished video production

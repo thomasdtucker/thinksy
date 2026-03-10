@@ -18,6 +18,7 @@ type ScriptRow = {
   id: number;
   category: string;
   scene: string | null;
+  outfit: string | null;
   script_type: string | null;
   hook: string;
   script: string;
@@ -35,6 +36,93 @@ const SCENE_LABELS: Record<string, string> = {
   kitchen_morning: "Kitchen Morning",
   backyard_garden: "Backyard Garden",
   coffee_shop: "Coffee Shop",
+};
+
+const SCENE_OUTFITS: Record<string, string[]> = {
+  home_office: [
+    "Navy blazer over a cream silk blouse, pearl stud earrings",
+    "Charcoal cardigan over a white button-down, silver pendant necklace",
+    "Burgundy blazer with a black turtleneck, small gold hoops",
+    "Camel cashmere sweater over a collared chambray shirt",
+    "Forest green blazer with an ivory shell top, tortoiseshell readers on a chain",
+    "Slate blue wrap blouse, delicate silver bracelet",
+    "Black blazer over a soft gray mock-neck, simple diamond studs",
+    "Plum cardigan with a striped boat-neck top, reading glasses pushed up",
+    "Tan linen blazer over a white linen blouse, woven leather watch band",
+    "Dusty rose blazer with a navy polka-dot blouse, gold knot earrings",
+    "Olive drab utility jacket layered over a cream henley, tortoiseshell glasses",
+    "Heather gray turtleneck sweater dress with a thin cognac belt",
+  ],
+  neighborhood_walk: [
+    "Light gray zip-up jacket over a white tee, clean white sneakers",
+    "Navy quilted vest over a striped long-sleeve, walking shoes",
+    "Soft olive pullover with black leggings, comfortable flats",
+    "Cream cable-knit sweater with dark jeans, ankle boots",
+    "Coral windbreaker over a gray tank, sporty sunglasses on head",
+    "Denim jacket over a white scoop-neck tee, canvas sneakers",
+    "Sage green half-zip fleece with khaki joggers",
+    "Heather blue hoodie with a light puffer vest, clean trail shoes",
+    "Taupe trench coat over a black turtleneck, leather flats",
+    "Burgundy pullover with a plaid flannel peeking at the collar, brown boots",
+    "Oatmeal linen shirt-jacket over a navy tee, slip-on mules",
+    "Dusty blue rain jacket with dark joggers, white sneakers",
+  ],
+  living_room: [
+    "Soft cream cardigan over a gray camisole, reading glasses",
+    "Oversized rust-colored sweater with dark slacks, fuzzy socks",
+    "Navy wrap sweater with pearl buttons, cozy throw over her lap",
+    "Heather gray cashmere pullover with black leggings",
+    "Dusty lavender cable-knit sweater, simple gold chain",
+    "Oatmeal turtleneck with a camel blanket scarf draped over one shoulder",
+    "Maroon fleece pullover with relaxed khakis",
+    "Charcoal waffle-knit henley with a chunky knit throw nearby",
+    "Soft jade green cardigan over a white tee, delicate gold hoops",
+    "Ivory fisherman sweater with dark corduroys, wool socks",
+    "Plum velvet top with cream wide-leg pants, small pendant",
+    "Slate blue cowl-neck sweater with tan lounge pants",
+  ],
+  kitchen_morning: [
+    "Light blue chambray button-up, sleeves rolled, coffee mug in hand",
+    "Cream waffle-knit thermal with gray joggers, hair clipped up",
+    "Soft pink sweater over a white tee, small gold studs",
+    "Sage green linen top with khaki shorts, barefoot or simple slides",
+    "White cotton blouse with navy capri pants, simple watch",
+    "Heather gray sweatshirt with a subtle embroidered logo, reading glasses",
+    "Coral long-sleeve henley with dark jeans, leather sandals",
+    "Oatmeal cashmere hoodie with black cropped pants",
+    "Soft yellow gingham button-up, sleeves cuffed, hair in a low bun",
+    "Navy Breton-stripe top with white linen pants, espadrilles",
+    "Dusty rose fleece quarter-zip with relaxed khakis",
+    "Light olive linen shirt, untucked, with dark denim",
+  ],
+  backyard_garden: [
+    "Wide-brim straw hat, denim shirt over a white tank, garden gloves tucked in pocket",
+    "Faded olive utility vest over a cream long-sleeve, sun hat nearby",
+    "Light khaki button-up with rolled sleeves, canvas apron",
+    "Coral cotton tee with relaxed jeans, wide sun hat",
+    "Chambray shirt tied at the waist over a navy tank, straw visor",
+    "Terracotta linen blouse with dark capris, gardening clogs",
+    "Pale blue oxford shirt with khaki shorts, canvas sneakers",
+    "Striped boat-neck top with olive cargo pants, bucket hat",
+    "White peasant blouse with faded denim overalls, bandana around neck",
+    "Sage linen jumpsuit with a woven leather belt, simple flats",
+    "Tan poplin camp shirt with dark linen pants, straw fedora",
+    "Soft mint henley with cropped khakis, leather gardening gloves",
+  ],
+  coffee_shop: [
+    "Ivory silk blouse with a light herringbone scarf, small gold hoops",
+    "Soft camel turtleneck with a navy blazer, tortoiseshell sunglasses on table",
+    "Dusty rose wrap top with dark trousers, delicate chain necklace",
+    "Charcoal cashmere crewneck with a printed silk scarf, pearl studs",
+    "Cream linen blazer over a black v-neck tee, silver cuff bracelet",
+    "Slate blue button-down with tan chinos, loafers",
+    "Burgundy merino pullover with a plaid scarf, leather-banded watch",
+    "Navy ponte blazer over a white striped shirt, simple diamond pendant",
+    "Olive silk blouse with cream trousers, woven tote beside her",
+    "Soft white cotton sweater with a denim jacket over the chair back",
+    "Mauve knit top with a long gold pendant, reading glasses on the table",
+    "Teal wrap cardigan over a gray camisole, enamel bangle set",
+  ],
 };
 
 type VideoRow = {
@@ -156,12 +244,13 @@ export default function AdminConsole() {
   /* ---- data lists ---- */
   const [scripts, setScripts] = useState<ScriptRow[]>([]);
   const [videos, setVideos] = useState<VideoRow[]>([]);
+  const [videoCacheBust, setVideoCacheBust] = useState(() => Date.now());
   const [igPosts, setIgPosts] = useState<InstagramPostRow[]>([]);
   const [scriptFilter, setScriptFilter] = useState<
     "all" | "script_draft" | "script_approved" | "video_generating" | "video_ready" | "video_approved" | "completed" | "failed"
   >("script_draft");
   const [videoFilter, setVideoFilter] = useState<
-    "all" | "video_ready" | "video_approved" | "failed" | "video_generating"
+    "all" | "video_ready" | "video_approved" | "completed" | "posted_instagram" | "posted_youtube" | "failed" | "video_generating"
   >("video_ready");
 
   /* ---- script review ---- */
@@ -246,6 +335,7 @@ export default function AdminConsole() {
       | { videos?: VideoRow[] }
       | null;
     setVideos(json?.videos || []);
+    setVideoCacheBust(Date.now());
   }, [headers, videoFilter]);
 
   const loadIgPosts = useCallback(async () => {
@@ -413,6 +503,42 @@ export default function AdminConsole() {
     }
   }
 
+  const ALL_SCENES = Object.keys(SCENE_LABELS);
+
+  function pickRandomOutfit(scene: string, currentOutfit?: string | null): string {
+    const outfits = SCENE_OUTFITS[scene] || SCENE_OUTFITS.home_office;
+    const others = currentOutfit ? outfits.filter((o) => o !== currentOutfit) : outfits;
+    const pool = others.length > 0 ? others : outfits;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  async function shuffleScene(scriptId: number) {
+    const current = selectedScript?.scene || "home_office";
+    const others = ALL_SCENES.filter((s) => s !== current);
+    const next = others[Math.floor(Math.random() * others.length)];
+    const nextOutfit = pickRandomOutfit(next);
+    await fetch(`/api/admin/scripts/${scriptId}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ action: "patch", patch: { scene: next, outfit: nextOutfit } }),
+    });
+    setSelectedScript((prev) => prev ? { ...prev, scene: next, outfit: nextOutfit } : prev);
+    setScripts((prev) => prev.map((s) => s.id === scriptId ? { ...s, scene: next, outfit: nextOutfit } : s));
+  }
+
+  async function shuffleOutfit(scriptId: number) {
+    const scene = selectedScript?.scene || "home_office";
+    const currentOutfit = selectedScript?.outfit;
+    const nextOutfit = pickRandomOutfit(scene, currentOutfit);
+    await fetch(`/api/admin/scripts/${scriptId}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ action: "patch", patch: { outfit: nextOutfit } }),
+    });
+    setSelectedScript((prev) => prev ? { ...prev, outfit: nextOutfit } : prev);
+    setScripts((prev) => prev.map((s) => s.id === scriptId ? { ...s, outfit: nextOutfit } : s));
+  }
+
   async function setVideoStatus(videoId: number, contentId: number, status: string) {
     await fetch(`/api/admin/videos/${videoId}`, {
       method: "POST",
@@ -469,6 +595,25 @@ export default function AdminConsole() {
     if (resource === "actions") setPsActions(json);
     if (resource === "transactions") setPsTransactions(json);
     if (resource === "rewards") setPsRewards(json);
+  }
+
+  const [syncStatus, setSyncStatus] = useState<string>("");
+  async function syncToSite() {
+    setSyncStatus("Syncing...");
+    try {
+      const resp = await fetch("/api/admin/sync-site", {
+        method: "POST",
+        headers,
+      });
+      const json = (await resp.json()) as Record<string, unknown>;
+      if (json.synced) {
+        setSyncStatus(`Synced ${json.count} video(s) to site data`);
+      } else {
+        setSyncStatus(`Sync failed: ${json.error || "Unknown error"}`);
+      }
+    } catch (e: unknown) {
+      setSyncStatus(`Sync error: ${e instanceof Error ? e.message : String(e)}`);
+    }
   }
 
   /* ================================================================ */
@@ -681,7 +826,16 @@ export default function AdminConsole() {
               >
                 Generate Geo Pages
               </button>
+              <button
+                onClick={() => void syncToSite()}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+              >
+                Sync to Site
+              </button>
             </div>
+            {syncStatus && (
+              <p className="text-sm mt-2 text-gray-400">{syncStatus}</p>
+            )}
           </div>
         </div>
 
@@ -869,13 +1023,33 @@ export default function AdminConsole() {
                     </div>
                   </div>
 
-                  <div className="mt-3 flex items-center gap-2 text-xs">
-                    <span className="text-gray-500">Scene</span>
-                    <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-800 text-gray-300 border-gray-700">
-                      {selectedScript.scene
-                        ? (SCENE_LABELS[selectedScript.scene] ?? selectedScript.scene)
-                        : "Home Office"}
-                    </span>
+                  <div className="mt-3 space-y-2">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-gray-500 w-10">Scene</span>
+                      <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-800 text-gray-300 border-gray-700">
+                        {selectedScript.scene
+                          ? (SCENE_LABELS[selectedScript.scene] ?? selectedScript.scene)
+                          : "Home Office"}
+                      </span>
+                      <button
+                        onClick={() => void shuffleScene(selectedScript.id)}
+                        className="bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-2.5 py-0.5 rounded-lg text-xs border border-gray-700 transition-colors"
+                      >
+                        Shuffle
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-gray-500 w-10">Outfit</span>
+                      <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full border bg-gray-800 text-gray-300 border-gray-700 max-w-[280px] truncate" title={selectedScript.outfit || "(default)"}>
+                        {selectedScript.outfit || "(default)"}
+                      </span>
+                      <button
+                        onClick={() => void shuffleOutfit(selectedScript.id)}
+                        className="bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-2.5 py-0.5 rounded-lg text-xs border border-gray-700 transition-colors"
+                      >
+                        Shuffle
+                      </button>
+                    </div>
                   </div>
 
                   <div className="mt-4 space-y-4">
@@ -999,6 +1173,9 @@ export default function AdminConsole() {
             >
               <option value="video_ready">video_ready</option>
               <option value="video_approved">video_approved</option>
+              <option value="completed">completed</option>
+              <option value="posted_instagram">posted_instagram</option>
+              <option value="posted_youtube">posted_youtube</option>
               <option value="failed">failed</option>
               <option value="video_generating">video_generating</option>
               <option value="all">all</option>
@@ -1029,8 +1206,9 @@ export default function AdminConsole() {
               >
                 <div className="p-4 flex items-center justify-between gap-2">
                   <div>
-                    <div className="text-white font-semibold">
+                    <div className="text-white font-semibold flex items-center gap-2">
                       Video #{v.id} · content #{v.content_id}
+                      <StatusPill status={(v as Record<string, unknown>).content_status as string || v.status} />
                     </div>
                     <div className="text-gray-400 text-sm line-clamp-1 mt-1">
                       {v.hook}
@@ -1053,7 +1231,7 @@ export default function AdminConsole() {
                 </div>
                 <div className="aspect-[9/16] bg-black">
                   <video
-                    src={`/media/videos/content_${v.content_id}.mp4`}
+                    src={`/media/videos/content_${v.content_id}.mp4?v=${videoCacheBust}`}
                     controls
                     className="w-full h-full object-cover"
                   />

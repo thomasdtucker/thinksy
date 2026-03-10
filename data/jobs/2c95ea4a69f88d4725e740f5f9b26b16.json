@@ -1,0 +1,12 @@
+{
+  "id": "2c95ea4a69f88d4725e740f5f9b26b16",
+  "type": "videos_produce",
+  "args": {
+    "contentId": 38
+  },
+  "status": "success",
+  "createdAt": "2026-03-10T04:54:23.523Z",
+  "startedAt": "2026-03-10T04:54:23.524Z",
+  "finishedAt": "2026-03-10T04:59:18.096Z",
+  "exitCode": 0
+}

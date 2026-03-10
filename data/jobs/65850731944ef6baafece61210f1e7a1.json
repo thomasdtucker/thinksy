@@ -1,0 +1,13 @@
+{
+  "id": "65850731944ef6baafece61210f1e7a1",
+  "type": "post",
+  "args": {
+    "platform": "both"
+  },
+  "status": "error",
+  "createdAt": "2026-03-10T01:20:25.113Z",
+  "startedAt": "2026-03-10T01:20:25.115Z",
+  "finishedAt": "2026-03-10T01:22:41.688Z",
+  "exitCode": 1,
+  "error": "FOREIGN KEY constraint failed"
+}

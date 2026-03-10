@@ -1,0 +1,9 @@
+Starting SEO update
+ [32m[1m✓[22m[39m Compiled /api/jobs/[id] in 202ms (1687 modules)
+ [32m[1m✓[22m[39m Compiled /api/admin/scripts/[id] in 99ms (519 modules)
+ [32m[1m✓[22m[39m Compiled in 120ms (878 modules)
+ [32m[1m✓[22m[39m Compiled in 110ms (391 modules)
+ [32m[1m✓[22m[39m Compiled /api/admin/sync-site in 62ms (513 modules)
+ [32m[1m✓[22m[39m Compiled in 87ms (904 modules)
+ [32m[1m✓[22m[39m Compiled in 92ms (904 modules)
+Error: Expected property name or '}' in JSON at position 1 (line 1 column 2)

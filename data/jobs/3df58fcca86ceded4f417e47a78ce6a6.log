@@ -1,0 +1,8 @@
+Starting posting (platform=both)
+ [32m[1m✓[22m[39m Compiled /api/jobs/[id] in 164ms (1684 modules)
+ [32m[1m✓[22m[39m Compiled / in 246ms (884 modules)
+ [32m[1m✓[22m[39m Compiled /videos/[slug] in 142ms (896 modules)
+ [32m[1m✓[22m[39m Compiled /api/jobs in 142ms (1680 modules)
+ [32m[1m✓[22m[39m Compiled /api/jobs/[id] in 110ms (1682 modules)
+ [32m[1m✓[22m[39m Compiled /media/videos/[filename] in 143ms (1684 modules)
+Error: FOREIGN KEY constraint failed

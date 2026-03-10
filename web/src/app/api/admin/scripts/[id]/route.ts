@@ -65,6 +65,8 @@ export async function POST(
       visual_direction?: string;
       target_url?: string;
       script_type?: string | null;
+      scene?: string;
+      outfit?: string | null;
     } = {};
 
     if (typeof p.hook === "string") patch.hook = p.hook;
@@ -73,6 +75,8 @@ export async function POST(
     if (typeof p.visual_direction === "string") patch.visual_direction = p.visual_direction;
     if (typeof p.target_url === "string") patch.target_url = p.target_url;
     if (typeof p.script_type === "string" || p.script_type === null) patch.script_type = p.script_type;
+    if (typeof p.scene === "string") patch.scene = p.scene;
+    if (typeof p.outfit === "string" || p.outfit === null) patch.outfit = p.outfit;
 
     updateScript(scriptId, patch);
     return NextResponse.json({ ok: true });

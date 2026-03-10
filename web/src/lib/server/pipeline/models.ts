@@ -37,6 +37,7 @@ export interface ContentItem {
   id?: number;
   category: SoftwareCategory;
   scene?: string | null;
+  outfit?: string | null;
   script_type?: string | null;
   scriptType?: string | null;
   hook: string;
@@ -84,6 +85,7 @@ export interface InstagramPost {
   hashtags: string[];
   posted_at?: string | null;
   postedAt?: string | Date | null;
+  permalink?: string | null;
 }
 
 export interface YouTubeUpload {

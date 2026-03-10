@@ -1,0 +1,11 @@
+{
+  "id": "5733b3618a1e00768496c6fded90e10e",
+  "type": "seo_update",
+  "args": {},
+  "status": "error",
+  "createdAt": "2026-03-10T04:46:27.458Z",
+  "startedAt": "2026-03-10T04:46:27.459Z",
+  "finishedAt": "2026-03-10T04:54:16.915Z",
+  "exitCode": 1,
+  "error": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+}

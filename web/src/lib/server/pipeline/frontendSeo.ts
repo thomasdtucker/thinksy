@@ -67,7 +67,7 @@ export class FrontendSEOAgent {
         continue;
       }
       this.db.upsert_seo_metadata(video.id, seoData);
-      this.db.log_action(content.id ?? 0, "FrontendSEOAgent", "generated_seo_metadata", seoData);
+      this.db.log_action(content.id ?? null, "FrontendSEOAgent", "generated_seo_metadata", seoData);
     }
   }
 
@@ -98,7 +98,7 @@ export class FrontendSEOAgent {
           local_stat: readString(pageData, "local_stat"),
         };
         this.db.insert_geo_page(payload);
-        this.db.log_action(0, "FrontendSEOAgent", "generated_geo_page", { slug });
+        this.db.log_action(null, "FrontendSEOAgent", "generated_geo_page", { slug });
         count += 1;
       }
     }

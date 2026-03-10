@@ -1,0 +1,4 @@
+Starting SEO update
+ [32m[1m✓[22m[39m Compiled /api/jobs/[id] in 110ms (1682 modules)
+ [32m[1m✓[22m[39m Compiled /media/videos/[filename] in 143ms (1684 modules)
+Error: FOREIGN KEY constraint failed
